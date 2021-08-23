@@ -12,14 +12,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MainRepository @Inject constructor(val newsApi: NewsApi) {
+class MainRepository @Inject constructor(val newsApi: NewsApi, val networkRepository: NetworkRepository) {
 
     fun getAllNews(apiKey: String): Flow<PagingData<Articles>> {
         return Pager(
             config = PagingConfig(
                 pageSize = NewsPagingSource.NETWORK_PAGE_SIZE
             ),
-            pagingSourceFactory = { NewsPagingSource(newsApi) }
+            pagingSourceFactory = { NewsPagingSource(newsApi, networkRepository) }
         ).flow
     }
 

@@ -1,5 +1,7 @@
 package com.github.justalexandeer.simplenewsapp.api
 
+import android.util.Log
+import com.github.justalexandeer.simplenewsapp.data.network.ErrorResponse
 import okhttp3.Request
 import okhttp3.ResponseBody
 import okio.Timeout
@@ -21,13 +23,17 @@ class NetworkResponseCall<S : Any, E : Any>(
                 val code = response.code()
                 val error = response.errorBody()
 
+                Log.i(TAG, "onResponse: ${error}")
+
                 if (response.isSuccessful) {
-                    if(body != null) {
+                    if (body != null) {
+                        Log.i(TAG, "onResponse: body != null")
                         callback.onResponse(
                             this@NetworkResponseCall,
                             Response.success(NetworkResponse.Success(body))
                         )
                     } else {
+                        Log.i(TAG, "onResponse: body = null")
                         callback.onResponse(
                             this@NetworkResponseCall,
                             Response.success(NetworkResponse.UnknownError(null))
@@ -38,17 +44,23 @@ class NetworkResponseCall<S : Any, E : Any>(
                         error == null -> null
                         error.contentLength() == 0L -> null
                         else -> try {
+                            Log.i(TAG, "onResponse: try converter")
                             errorConverter.convert(error)
                         } catch (e: Exception) {
+                            Log.i(TAG, "onResponse: catch exception")
+                            Log.i(TAG, "onResponse: ${e.message}")
+                            Log.i(TAG, "onResponse: ${e.cause}")
                             null
                         }
                     }
                     if (errorBody != null) {
+                        Log.i(TAG, "onResponse: errorBody!=null")
                         callback.onResponse(
                             this@NetworkResponseCall,
                             Response.success(NetworkResponse.ApiError(errorBody, code))
                         )
                     } else {
+                        Log.i(TAG, "onResponse: errorBody = null")
                         callback.onResponse(
                             this@NetworkResponseCall,
                             Response.success(NetworkResponse.UnknownError(null))
@@ -82,5 +94,9 @@ class NetworkResponseCall<S : Any, E : Any>(
     override fun request(): Request = delegate.request()
 
     override fun timeout(): Timeout = delegate.timeout()
+
+    companion object {
+        private const val TAG = "NetworkResponseCall"
+    }
 
 }

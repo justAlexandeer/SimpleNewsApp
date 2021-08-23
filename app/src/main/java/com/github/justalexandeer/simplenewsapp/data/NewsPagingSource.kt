@@ -8,18 +8,23 @@ import com.github.justalexandeer.simplenewsapp.api.NewsApi
 import com.github.justalexandeer.simplenewsapp.data.models.Articles
 import com.github.justalexandeer.simplenewsapp.data.models.SuccessResponse
 import com.github.justalexandeer.simplenewsapp.repository.MainRepository
+import com.github.justalexandeer.simplenewsapp.repository.NetworkRepository
 import retrofit2.HttpException
 import java.io.IOException
+import java.lang.Exception
 import javax.security.auth.login.LoginException
 
 class NewsPagingSource(
-    private val newsApi: NewsApi
+    private val newsApi: NewsApi,
+    private val networkRepository: NetworkRepository
 ): PagingSource<Int, Articles>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Articles> {
         val position = params.key ?: NEWS_STARTING_PAGE_INDEX
         return try {
-            val response = newsApi.getGetAllNews("bitcoin", MainRepository.apiKey, NETWORK_PAGE_SIZE, position)
+            //val response = newsApi.getGetAllNews("bitcoin", MainRepository.apiKey, NETWORK_PAGE_SIZE, position)
+            val response = networkRepository.getNews(MainRepository.apiKey, position)
+
             val articles = response.articles
             Log.i("NewsNetworkViewModel", "load: ${articles.size}")
             val nextKey = if (articles.isEmpty()) {
@@ -32,21 +37,16 @@ class NewsPagingSource(
                 prevKey = if (position == NEWS_STARTING_PAGE_INDEX) null else position - 1,
                 nextKey = nextKey
             )
-        } catch (exception: IOException) {
-            Log.i(TAG, "load: IOExcpetion")
-            return LoadResult.Error(exception)
-        } catch (exception: HttpException) {
-            Log.i(TAG, "load: ${exception.code()}")
-            Log.i(TAG, "load: ${exception.message()}")
-            Log.i(TAG, "load: ${exception.response()}")
-            Log.i(TAG, "load: -------------------------")
-            Log.i(TAG, "load: ${exception.cause}")
-            Log.i(TAG, "load: ${exception.message}")
-            Log.i(TAG, "load: ${exception.stackTrace}")
-            Log.i(TAG, "load: ${exception.toString()}")
-            Log.i(TAG, "load: HttpException")
+        } catch (exception: Exception) {
+            Log.i("ConverterResponse", "load: ${exception.message}")
             return LoadResult.Error(exception)
         }
+
+        /*catch (exception: IOException) {
+            return LoadResult.Error(exception)
+        } catch (exception: HttpException) {
+            return LoadResult.Error(exception)
+        }*/
     }
 
     override fun getRefreshKey(state: PagingState<Int, Articles>): Int? {
@@ -57,7 +57,7 @@ class NewsPagingSource(
     }
     companion object {
         private const val NEWS_STARTING_PAGE_INDEX = 1
-        const val NETWORK_PAGE_SIZE = 60
+        const val NETWORK_PAGE_SIZE = 30
         private const val TAG = "NewsPagingSource"
     }
 }
