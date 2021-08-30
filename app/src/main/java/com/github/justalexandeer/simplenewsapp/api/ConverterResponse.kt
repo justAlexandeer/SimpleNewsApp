@@ -1,35 +1,32 @@
 package com.github.justalexandeer.simplenewsapp.api
 
 import android.util.Log
-import com.github.justalexandeer.simplenewsapp.data.models.Result
-import com.github.justalexandeer.simplenewsapp.data.models.SuccessResponse
-import com.github.justalexandeer.simplenewsapp.data.network.ErrorResponse
-import retrofit2.Response
+import com.github.justalexandeer.simplenewsapp.data.network.response.Result
+import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessResponse
+import com.github.justalexandeer.simplenewsapp.data.network.response.ErrorResponse
+import com.github.justalexandeer.simplenewsapp.data.network.response.NetworkResponse
+import java.io.IOException
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ConverterResponse {
+@Singleton
+class ConverterResponse @Inject constructor() {
 
     suspend fun <T> createCall(call: suspend () -> NetworkResponse<SuccessResponse, ErrorResponse>): Result<SuccessResponse> {
         val response = call.invoke()
         when(response) {
             is NetworkResponse.Success -> {
-                Log.i(TAG, "createCall: Success")
                 return Result.Success(response.body)
             }
             is NetworkResponse.ApiError -> {
-                Log.i(TAG, "createCall: ApiError")
-                val errorResponse: ErrorResponse = response.body as ErrorResponse
-                Log.i(TAG, "createCall: ${errorResponse.message}")
-                Log.i(TAG, "createCall: ${errorResponse.code}")
-                Log.i(TAG, "createCall: ${errorResponse.status}")
+                val errorResponse: ErrorResponse = response.body
                 return Result.Error(Exception(errorResponse.message))
             }
             is NetworkResponse.NetworkError -> {
-                Log.i(TAG, "createCall: NetworkError")
-                return Result.Error(Exception(response.error))
+                return Result.Error(IOException(response.error.message))
             }
             is NetworkResponse.UnknownError -> {
-                Log.i(TAG, "createCall: UnknownError")
                 return Result.Error(Exception(response.error))
             }
         }

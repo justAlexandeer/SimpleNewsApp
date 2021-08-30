@@ -1,21 +1,23 @@
-package com.github.justalexandeer.simplenewsapp.ui.fragment.newsnetwork
+package com.github.justalexandeer.simplenewsapp.ui.view
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
+import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.databinding.NewLoadStateViewItemBinding
-import com.github.justalexandeer.simplenewsapp.databinding.NewViewItemBinding
 
-class NewsLoadStateViewHolder(
+class NewsLoadStateViewHolder (
     val binding: NewLoadStateViewItemBinding,
-    view: View,
+    val view: View,
     retry: () -> Unit,
 ) : RecyclerView.ViewHolder(view) {
 
     init {
+        Log.i(TAG, "init: viewholder create")
         binding.retryButton.setOnClickListener {
             retry.invoke()
         }
@@ -23,7 +25,12 @@ class NewsLoadStateViewHolder(
 
     fun bind(loadState: LoadState) {
         if (loadState is LoadState.Error) {
-            binding.errorMsg.text = loadState.error.message
+            if (loadState.error.message == null) {
+                binding.errorMsg.text =
+                    view.context.resources.getString(R.string.retryMessage)
+            } else {
+                binding.errorMsg.text = loadState.error.localizedMessage
+            }
         }
         binding.progressBar.isVisible = loadState is LoadState.Loading
         binding.retryButton.isVisible = loadState is LoadState.Error
@@ -31,6 +38,7 @@ class NewsLoadStateViewHolder(
     }
 
     companion object {
+        private const val TAG = "NewsLoadStateViewHolder"
         fun create(parent: ViewGroup, retry: () -> Unit): NewsLoadStateViewHolder {
             val binding = NewLoadStateViewItemBinding.inflate(
                 LayoutInflater.from(parent.context),

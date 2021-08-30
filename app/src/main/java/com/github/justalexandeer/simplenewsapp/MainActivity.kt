@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.findNavController()
         val appBarConfiguration =
-            AppBarConfiguration(setOf(R.id.newsNetworkFragment, R.id.newsCacheFragment))
+            AppBarConfiguration(setOf(R.id.newsCacheFragment))
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
         binding.bottomNav.setupWithNavController(navController)
 

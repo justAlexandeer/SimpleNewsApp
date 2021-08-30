@@ -1,6 +1,5 @@
-package com.github.justalexandeer.simplenewsapp.data.network
+package com.github.justalexandeer.simplenewsapp.data.network.response
 
-import com.github.justalexandeer.simplenewsapp.data.models.Source
 import com.google.gson.annotations.SerializedName
 
 data class ErrorResponse (

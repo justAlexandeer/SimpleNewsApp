@@ -1,8 +1,9 @@
-package com.github.justalexandeer.simplenewsapp.ui.fragment.newsnetwork
+package com.github.justalexandeer.simplenewsapp.ui.fragment.newscache
 
 import android.view.ViewGroup
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
+import com.github.justalexandeer.simplenewsapp.ui.view.NewsLoadStateViewHolder
 
 class NewsLoadStateAdapter(private val retry: () -> Unit): LoadStateAdapter<NewsLoadStateViewHolder>() {
 

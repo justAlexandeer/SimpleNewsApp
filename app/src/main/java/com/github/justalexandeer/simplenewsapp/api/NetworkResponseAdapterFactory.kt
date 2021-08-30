@@ -1,5 +1,6 @@
 package com.github.justalexandeer.simplenewsapp.api
 
+import com.github.justalexandeer.simplenewsapp.data.network.response.NetworkResponse
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit

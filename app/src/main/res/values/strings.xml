@@ -3,4 +3,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="retry">Повторить попытку</string>
+    <string name="retryMessage">Уууупс… что-то пошло не так</string>
+    <string name="checkInternetConnection">Проверьте интернет соединение</string>
+    <string name="unknownAuthor">Неизвестный автор</string>
 </resources>

@@ -3,20 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/newsNetworkFragment">
+    app:startDestination="@id/newsCacheFragment">
 
     <fragment
-        android:id="@+id/newsNetworkFragment"
-        android:name="com.github.justalexandeer.simplenewsapp.ui.fragment.newsnetwork.NewsNetworkFragment"
-        android:label="fragment_news_network"
-        tools:layout="@layout/fragment_news_network" >
-        <action
-            android:id="@+id/action_newsNetwork_to_newsCacheFragment"
-            app:destination="@id/newsCacheFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/newsCacheFragment"
-        android:name="com.github.justalexandeer.simplenewsapp.ui.fragment.NewsCacheFragment"
+        android:name="com.github.justalexandeer.simplenewsapp.ui.fragment.newscache.NewsCacheFragment"
         android:label="fragment_news_cache"
         tools:layout="@layout/fragment_news_cache" />
 

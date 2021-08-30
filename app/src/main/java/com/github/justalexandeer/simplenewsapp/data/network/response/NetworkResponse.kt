@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.api
+package com.github.justalexandeer.simplenewsapp.data.network.response
 
 import java.io.IOException
 

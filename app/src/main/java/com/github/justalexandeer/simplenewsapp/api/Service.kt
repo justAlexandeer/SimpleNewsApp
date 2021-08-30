@@ -1,11 +1,10 @@
 package com.github.justalexandeer.simplenewsapp.api
 
-import okhttp3.OkHttp
+import com.github.justalexandeer.simplenewsapp.api.interceptor.ApiQueryInterceptor
+import com.github.justalexandeer.simplenewsapp.api.interceptor.LoggingInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class Service {
     private val retrofit = Retrofit.Builder()
@@ -18,6 +17,9 @@ class Service {
     companion object {
         val retrofit: NewsApi by lazy {Service().retrofit.create(NewsApi::class.java)}
         private val okHttpClient = OkHttpClient().newBuilder()
-            .addInterceptor(LoggingInterceptor()).build()
+            .addInterceptor(LoggingInterceptor())
+            .addInterceptor(ApiQueryInterceptor())
+            .build()
+
     }
 }

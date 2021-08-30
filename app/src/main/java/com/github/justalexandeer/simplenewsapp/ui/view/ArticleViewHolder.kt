@@ -1,34 +1,35 @@
-package com.github.justalexandeer.simplenewsapp.ui.fragment.newsnetwork
+package com.github.justalexandeer.simplenewsapp.ui.view
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.github.justalexandeer.simplenewsapp.data.models.Articles
+import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.databinding.NewViewItemBinding
 
-class NewsViewHolder(
-    view: View,
+class ArticleViewHolder (
+    val view: View,
     val binding: NewViewItemBinding
 ) : RecyclerView.ViewHolder(view) {
 
-    fun bind(article: Articles?) {
+    fun bind(article: ArticleDb?) {
         if(article == null) {
         } else {
+            binding.newId.text = article.idArticle.toString()
             binding.newTitle.text = article.title
             binding.newDescription.text = article.description
         }
     }
 
     companion object {
-        fun create(parent: ViewGroup): NewsViewHolder {
+        fun create(parent: ViewGroup): ArticleViewHolder {
             val binding = NewViewItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             )
-            return NewsViewHolder(binding.root, binding)
+            return ArticleViewHolder(binding.root, binding)
         }
     }
+
 }

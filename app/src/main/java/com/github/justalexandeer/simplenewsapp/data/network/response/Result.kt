@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.data.models
+package com.github.justalexandeer.simplenewsapp.data.network.response
 
 import java.lang.Exception
 

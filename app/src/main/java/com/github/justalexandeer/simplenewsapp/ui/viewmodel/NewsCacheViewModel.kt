@@ -1,34 +1,33 @@
 package com.github.justalexandeer.simplenewsapp.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.github.justalexandeer.simplenewsapp.data.models.Articles
+import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
+import com.github.justalexandeer.simplenewsapp.data.network.response.Article
 import com.github.justalexandeer.simplenewsapp.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsNetworkViewModel @Inject constructor(
+class NewsCacheViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ): ViewModel() {
 
-    var listArticles: MutableLiveData<PagingData<Articles>> = MutableLiveData()
+    var listArticle: MutableLiveData<PagingData<ArticleDb>> = MutableLiveData()
 
-    fun getAllNews() {
+    fun getArticles() {
         viewModelScope.launch {
-            mainRepository.getAllNews(MainRepository.apiKey)
+            mainRepository.getAllNewsAndCache("bitcoin")
                 .collect {
-                    listArticles.value = it
+                    listArticle.value = it
                 }
         }
     }
 
-    companion object {
-        private const val TAG = "NewsNetworkViewModel"
-    }
 }
