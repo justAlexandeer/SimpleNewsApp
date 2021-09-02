@@ -60,7 +60,7 @@ class ArticleRemoteMediator(
 
         try {
             Log.i(TAG, "load: page = $page")
-            val apiResponse = networkRepository.getNews("", page)
+            val apiResponse = networkRepository.getNews(query, page)
             val articles = apiResponse.articles
 
             val endOfPagination = articles.isEmpty()

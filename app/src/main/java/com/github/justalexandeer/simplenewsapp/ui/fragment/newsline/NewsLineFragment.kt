@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.ui.fragment.newscache
+package com.github.justalexandeer.simplenewsapp.ui.fragment.newsline
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,17 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsCacheBinding
-import com.github.justalexandeer.simplenewsapp.ui.viewmodel.NewsCacheViewModel
+import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsLineBinding
+import com.github.justalexandeer.simplenewsapp.ui.viewmodel.NewsLineViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class NewsCacheFragment : Fragment() {
+class NewsLineFragment : Fragment() {
 
-    private lateinit var binding: FragmentNewsCacheBinding
-    private val viewModel: NewsCacheViewModel by viewModels()
+    private lateinit var binding: FragmentNewsLineBinding
+    private val viewModel: NewsLineViewModel by viewModels()
     private val pagingAdapter = ArticleAdapter()
 
     override fun onCreateView(
@@ -25,7 +25,7 @@ class NewsCacheFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewsCacheBinding.inflate(inflater, container, false)
+        binding = FragmentNewsLineBinding.inflate(inflater, container, false)
         return binding.root
     }
 

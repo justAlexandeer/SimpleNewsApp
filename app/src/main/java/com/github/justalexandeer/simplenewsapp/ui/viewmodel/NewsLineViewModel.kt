@@ -15,9 +15,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsCacheViewModel @Inject constructor(
+class NewsLineViewModel @Inject constructor(
     private val mainRepository: MainRepository
-): ViewModel() {
+) : ViewModel() {
 
     var listArticle: MutableLiveData<PagingData<ArticleDb>> = MutableLiveData()
 

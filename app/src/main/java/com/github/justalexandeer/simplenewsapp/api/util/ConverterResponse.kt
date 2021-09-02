@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.api
+package com.github.justalexandeer.simplenewsapp.api.util
 
 import android.util.Log
 import com.github.justalexandeer.simplenewsapp.data.network.response.Result

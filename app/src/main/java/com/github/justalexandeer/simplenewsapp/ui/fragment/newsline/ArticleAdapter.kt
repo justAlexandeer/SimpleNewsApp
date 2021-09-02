@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.ui.fragment.newscache
+package com.github.justalexandeer.simplenewsapp.ui.fragment.newsline
 
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter

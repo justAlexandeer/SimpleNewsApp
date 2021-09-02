@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="news_card_name">26sp</dimen>
+    <dimen name="news_card_small">8dp</dimen>
+    <dimen name="new_view_item_text_size">16sp</dimen>
+    <dimen name="separator_height">1dp</dimen>
+</resources>

@@ -11,9 +11,12 @@ import com.github.justalexandeer.simplenewsapp.data.db.AppDatabase
 import com.github.justalexandeer.simplenewsapp.data.db.ArticleDao
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.data.network.response.Article
+import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessResponse
+import com.github.justalexandeer.simplenewsapp.data.network.response.Result
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,6 +46,15 @@ class MainRepository @Inject constructor(
             )
 
         ).flow
+    }
+
+    suspend fun getNews(query: String): Flow<Result<SuccessResponse>> {
+        val result:Result<SuccessResponse> = networkRepository.getNewsTest(query, 1)
+
+        return flow {
+            emit(result)
+        }
+
     }
 
     companion object {

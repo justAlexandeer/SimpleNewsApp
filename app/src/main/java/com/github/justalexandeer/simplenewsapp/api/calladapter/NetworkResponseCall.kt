@@ -1,6 +1,5 @@
-package com.github.justalexandeer.simplenewsapp.api
+package com.github.justalexandeer.simplenewsapp.api.calladapter
 
-import android.util.Log
 import com.github.justalexandeer.simplenewsapp.data.network.response.NetworkResponse
 import okhttp3.Request
 import okhttp3.ResponseBody

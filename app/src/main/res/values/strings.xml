@@ -6,4 +6,7 @@
     <string name="retryMessage">Уууупс… что-то пошло не так</string>
     <string name="checkInternetConnection">Проверьте интернет соединение</string>
     <string name="unknownAuthor">Неизвестный автор</string>
+    <string name="bottom_navigation_news_main">Главная</string>
+    <string name="bottom_navigation_news_line">Кэш</string>
+    <string name="image_description">Изображение</string>
 </resources>
