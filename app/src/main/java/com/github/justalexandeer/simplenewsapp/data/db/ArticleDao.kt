@@ -22,4 +22,9 @@ interface ArticleDao {
     @Query("DELETE FROM article")
     suspend fun clearArticles()
 
+    @Query("SELECT * from article")
+    fun getAllArticle(): Flow<List<ArticleDb>>
+
+    @Insert
+    suspend fun insertAllMainArticle(articles: List<ArticleDb>)
 }

@@ -32,22 +32,27 @@ class NewsMainViewModel @Inject constructor(
 
 
         // Изменить тут все на кеширование (возвращаемый тип данных)
+//        viewModelScope.launch {
+//
+//
+//            mainRepository.getNews("bitcoin").collect {
+//                when(it) {
+//                    is Result.Success -> {
+//                        mutableListNewsBitcoin.value = it.data.articles
+//                        Log.i(TAG, "getNews: success")
+//                    }
+//                    is Error -> {
+//                        Log.i(TAG, "getNews: ${it.error}")
+//                    }
+//                }
+//            }
+//
+//        }
+
         viewModelScope.launch {
-
-
-            mainRepository.getNews("bitcoin").collect {
-                when(it) {
-                    is Result.Success -> {
-                        mutableListNewsBitcoin.value = it.data.articles
-                        Log.i(TAG, "getNews: success")
-                    }
-                    is Error -> {
-                        Log.i(TAG, "getNews: ${it.error}")
-                    }
-                }
-            }
-
+            mainRepository.getMainNews()
         }
+
 
     }
 
