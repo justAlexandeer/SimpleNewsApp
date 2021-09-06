@@ -1,8 +1,7 @@
 package com.github.justalexandeer.simplenewsapp.api.util
 
-import android.util.Log
 import com.github.justalexandeer.simplenewsapp.data.network.response.Result
-import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessResponse
+import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessArticlesResponse
 import com.github.justalexandeer.simplenewsapp.data.network.response.ErrorResponse
 import com.github.justalexandeer.simplenewsapp.data.network.response.NetworkResponse
 import java.io.IOException
@@ -13,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class ConverterResponse @Inject constructor() {
 
-    suspend fun <T> createCall(call: suspend () -> NetworkResponse<SuccessResponse, ErrorResponse>): Result<SuccessResponse> {
+    suspend fun <T> createCall(call: suspend () -> NetworkResponse<SuccessArticlesResponse, ErrorResponse>): Result<SuccessArticlesResponse> {
         val response = call.invoke()
         when(response) {
             is NetworkResponse.Success -> {

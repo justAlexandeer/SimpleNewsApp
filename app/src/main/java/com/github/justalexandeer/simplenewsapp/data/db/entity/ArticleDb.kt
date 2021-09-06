@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "article")
 data class ArticleDb(
-    @Embedded var source: SourceDb,
     @field:SerializedName("author") var author : String,
     @field:SerializedName("title") var title : String,
     @field:SerializedName("description") var description : String,
@@ -17,7 +16,8 @@ data class ArticleDb(
     @field:SerializedName("publishedAt") var publishedAt : String,
     @field:SerializedName("content") var content : String,
     @field:SerializedName("query") var query: String,
-    @PrimaryKey
-    @field:SerializedName("idArticle") val idArticle: Long
+    @field:SerializedName("type") var type: String,
+    @PrimaryKey(autoGenerate = true)
+    @field:SerializedName("idArticle") val idArticle: Long = 0L
 )
 

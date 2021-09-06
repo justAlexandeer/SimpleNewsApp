@@ -2,7 +2,7 @@ package com.github.justalexandeer.simplenewsapp.repository
 
 import com.github.justalexandeer.simplenewsapp.api.util.ConverterResponse
 import com.github.justalexandeer.simplenewsapp.api.NewsApi
-import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessResponse
+import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessArticlesResponse
 import com.github.justalexandeer.simplenewsapp.data.network.response.Result
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -14,18 +14,18 @@ class NetworkRepository @Inject constructor(
     private val converterResponse: ConverterResponse
 ) {
 
-    suspend fun getNews(query:String, position: Int) : SuccessResponse {
+    suspend fun getNews(query:String, position: Int) : SuccessArticlesResponse {
         delay(2000)
-        return when ( val result = converterResponse.createCall<SuccessResponse> { newsApi.test(query,
+        return when ( val result = converterResponse.createCall<SuccessArticlesResponse> { newsApi.getNewsByQuery(query,
             MainRepository.NETWORK_PAGE_SIZE, position) }) {
                 is Result.Success -> result.data
                 is Result.Error -> throw result.error
         }
     }
 
-    suspend fun getNewsTest(query: String, position: Int): Result<SuccessResponse> {
+    suspend fun getNewsTest(query: String, position: Int): Result<SuccessArticlesResponse> {
         delay(2000)
-        return converterResponse.createCall<SuccessResponse> { newsApi.test(query,
+        return converterResponse.createCall<SuccessArticlesResponse> { newsApi.getNewsByQuery(query,
             MainRepository.NETWORK_PAGE_SIZE, position) }
     }
 }

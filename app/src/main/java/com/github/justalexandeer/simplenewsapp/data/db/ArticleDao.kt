@@ -12,19 +12,21 @@ import kotlinx.coroutines.flow.Flow
 interface ArticleDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(articles: List<ArticleDb>)
+    suspend fun insertAll(articles: List<ArticleDb>): List<Long>
 
     @Query("SELECT * FROM article WHERE " +
             "query LIKE :queryString " +
             "ORDER BY idArticle ASC")
     fun articlesByQuery(queryString: String): PagingSource<Int, ArticleDb>
 
-    @Query("DELETE FROM article")
-    suspend fun clearArticles()
+    @Query("DELETE FROM article WHERE type = :type")
+    suspend fun clearArticles(type: String)
 
     @Query("SELECT * from article")
     fun getAllArticle(): Flow<List<ArticleDb>>
 
     @Insert
     suspend fun insertAllMainArticle(articles: List<ArticleDb>)
+
+
 }

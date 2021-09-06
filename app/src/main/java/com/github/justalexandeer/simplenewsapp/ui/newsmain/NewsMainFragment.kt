@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.ui.fragment.newsmain
+package com.github.justalexandeer.simplenewsapp.ui.newsmain
 
 import android.os.Bundle
 import android.util.Log
@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsMainBinding
-import com.github.justalexandeer.simplenewsapp.ui.viewmodel.NewsMainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NewsMainFragment : Fragment() {
@@ -35,15 +37,24 @@ class NewsMainFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.mutableListNewsBitcoin.observe(viewLifecycleOwner, {
-            val article = it[0]
-
-
-            binding.firstCard.firstNew.newsViewItemAuthor.text = article.author
-            binding.firstCard.firstNew.newsViewItemTitle.text = article.title
-            binding.firstCard.firstNew.newsViewItemDescription.text = article.description
-            binding.firstCard.firstNew.newsViewItemDate.text = article.publishedAt
-        })
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
+                when(it.mainNewsState) {
+                    is MainContractNewsMain.MainNewsState.Idle -> {
+                        Log.i(TAG, "setupObservers: IDLE")
+                    }
+                    is MainContractNewsMain.MainNewsState.Error -> {
+                        Log.i(TAG, "setupObservers: Error")
+                    }
+                    is MainContractNewsMain.MainNewsState.Loading -> {
+                        Log.i(TAG, "setupObservers: Loading")
+                    }
+                    is MainContractNewsMain.MainNewsState.Success -> {
+                        Log.i(TAG, "setupObservers: Success")
+                    }
+                }
+            }
+        }
     }
 
     companion object {

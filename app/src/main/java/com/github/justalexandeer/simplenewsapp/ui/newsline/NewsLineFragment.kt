@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.ui.fragment.newsline
+package com.github.justalexandeer.simplenewsapp.ui.newsline
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsLineBinding
-import com.github.justalexandeer.simplenewsapp.ui.viewmodel.NewsLineViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
