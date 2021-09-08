@@ -31,14 +31,16 @@ class NewsMainViewModel @Inject constructor(
 
     fun getNews() {
         viewModelScope.launch {
-            mainRepository.getMainNews().collect {
+            mainRepository.getMainNews("Country", "Health","Policy").collect {
+                if (it is MainContractNewsMain.MainNewsState.Error){
+                    setEffect { MainContractNewsMain.Effect.ShowToast(it.string) }
+                }
                 setState {
                     copy(mainNewsState = it)
                 }
             }
         }
     }
-
 
     companion object {
         private const val TAG = "NewsMainViewModel"

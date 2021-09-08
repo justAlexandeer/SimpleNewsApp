@@ -11,21 +11,30 @@ import javax.inject.Singleton
 @Singleton
 class NetworkRepository @Inject constructor(
     private val newsApi: NewsApi,
-    private val converterResponse: ConverterResponse
+    private val converterResponse: ConverterResponse,
 ) {
 
-    suspend fun getNews(query:String, position: Int) : SuccessArticlesResponse {
+    suspend fun getNews(query: String, position: Int): SuccessArticlesResponse {
         delay(2000)
-        return when ( val result = converterResponse.createCall<SuccessArticlesResponse> { newsApi.getNewsByQuery(query,
-            MainRepository.NETWORK_PAGE_SIZE, position) }) {
-                is Result.Success -> result.data
-                is Result.Error -> throw result.error
+        return when (val result = converterResponse.createCall {
+            newsApi.getNewsByQuery(query,
+                MainRepository.NETWORK_PAGE_SIZE, position)
+        }) {
+            is Result.Success -> result.data
+            is Result.Error -> throw result.error
         }
     }
 
-    suspend fun getNewsTest(query: String, position: Int): Result<SuccessArticlesResponse> {
+    suspend fun getMainNews(
+        query: String,
+        position: Int,
+        pageSize: Int,
+    ): Result<SuccessArticlesResponse> {
         delay(2000)
-        return converterResponse.createCall<SuccessArticlesResponse> { newsApi.getNewsByQuery(query,
-            MainRepository.NETWORK_PAGE_SIZE, position) }
+        return converterResponse.createCall {
+            newsApi.getNewsByQuery(query,
+                pageSize,
+                position)
+        }
     }
 }

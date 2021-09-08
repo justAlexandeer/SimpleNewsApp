@@ -17,13 +17,13 @@ class MainContractNewsMain {
 
     sealed class MainNewsState {
         object Idle : MainNewsState()
-        object Loading : MainNewsState()
+        data class Loading(val listNews: List<ArticleDb>?) : MainNewsState()
         data class Error (val string: String): MainNewsState()
         data class Success (val listNews: List<ArticleDb>) : MainNewsState()
     }
 
     sealed class Effect : UiEffect {
-        object ShowToast: Effect()
+        data class ShowToast(val message: String): Effect()
     }
 
 }

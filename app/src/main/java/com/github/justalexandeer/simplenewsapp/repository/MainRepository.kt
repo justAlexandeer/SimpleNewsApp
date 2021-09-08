@@ -1,6 +1,7 @@
 package com.github.justalexandeer.simplenewsapp.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,9 +18,7 @@ import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessArti
 import com.github.justalexandeer.simplenewsapp.data.network.response.Result
 import com.github.justalexandeer.simplenewsapp.ui.newsmain.MainContractNewsMain
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +28,7 @@ class MainRepository @Inject constructor(
     val networkRepository: NetworkRepository,
     val articleDao: ArticleDao,
     val appDatabase: AppDatabase,
-    @ApplicationContext val appContext: Context
+    @ApplicationContext val appContext: Context,
 ) {
 
     @OptIn(ExperimentalPagingApi::class)
@@ -51,23 +50,16 @@ class MainRepository @Inject constructor(
         ).flow
     }
 
-    suspend fun getNews(query: String): Flow<Result<SuccessArticlesResponse>> {
-        val result: Result<SuccessArticlesResponse> = networkRepository.getNewsTest(query, 1)
+    suspend fun getMainNews(firstQuery: String, secondQuery: String, thirdQuery: String) = flow {
+        class Test(query: String) :
+            NetworkBoundResource<List<ArticleDb>, Result<SuccessArticlesResponse>>(query) {
 
-        return flow {
-            emit(result)
-        }
-    }
-
-    // MainContract.MainNewsState
-    suspend fun getMainNews() = flow {
-        object : NetworkBoundResource<List<ArticleDb>, Result<SuccessArticlesResponse>>() {
-            override suspend fun loadFromNetwork(): Result<SuccessArticlesResponse> {
-                return networkRepository.getNewsTest("bitcoin", 1)
+            override suspend fun loadFromNetwork(query: String): Result<SuccessArticlesResponse> {
+                return networkRepository.getMainNews(query, 1, NETWORK_PAGE_SIZE)
             }
 
-            override suspend fun loadFromDb(): Flow<List<ArticleDb>> {
-                return articleDao.getAllArticle()
+            override suspend fun loadFromDb(articleType: String, query: String): Flow<List<ArticleDb>> {
+                return articleDao.getAllArticle(articleType, query)
             }
 
             override fun shodFetch(data: List<ArticleDb>?): Boolean {
@@ -78,11 +70,11 @@ class MainRepository @Inject constructor(
                 articleDao.insertAllMainArticle(data)
             }
 
-            override suspend fun deleteOldArticle(articleType: String) {
-                articleDao.clearArticles(articleType)
+            override suspend fun deleteOldArticle(articleType: String, query: String) {
+                articleDao.clearArticles(articleType, query)
             }
 
-            override fun mapData(result: Result<SuccessArticlesResponse>): List<ArticleDb> {
+            override fun mapData(result: Result<SuccessArticlesResponse>, query: String): List<ArticleDb> {
                 val listArticleFromNetwork =
                     (result as Result.Success<SuccessArticlesResponse>).data.articles
                 return listArticleFromNetwork.map {
@@ -94,12 +86,18 @@ class MainRepository @Inject constructor(
                         it.urlToImage,
                         it.publishedAt,
                         it.content,
-                        "bitcoin",
+                        query,
                         TYPE_ARTICLE
                     )
                 }
             }
-        }.asFlow()
+        }
+
+        flowOf(
+            Test(firstQuery).asFlow(),
+            Test(secondQuery).asFlow(),
+            Test(thirdQuery).asFlow())
+            .flattenMerge()
             .collect {
                 when (it) {
                     is Status.Success -> {
@@ -107,10 +105,14 @@ class MainRepository @Inject constructor(
                     }
                     is Status.Error -> {
                         emit(MainContractNewsMain.MainNewsState.Error
-                            (it.message?:appContext.resources.getString(R.string.retryMessage)))
+                            (it.message ?: appContext.resources.getString(R.string.retryMessage)))
                     }
                     is Status.Loading -> {
-                        emit(MainContractNewsMain.MainNewsState.Loading)
+                        if(!it.data.isNullOrEmpty()) {
+                            emit(MainContractNewsMain.MainNewsState.Loading(it.data))
+                        } else {
+                            emit(MainContractNewsMain.MainNewsState.Loading(null))
+                        }
                     }
                 }
             }

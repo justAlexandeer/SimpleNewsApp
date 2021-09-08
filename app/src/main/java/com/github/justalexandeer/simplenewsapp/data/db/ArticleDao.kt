@@ -22,8 +22,11 @@ interface ArticleDao {
     @Query("DELETE FROM article WHERE type = :type")
     suspend fun clearArticles(type: String)
 
-    @Query("SELECT * from article")
-    fun getAllArticle(): Flow<List<ArticleDb>>
+    @Query("DELETE FROM article WHERE type = :type AND `query` = :queryString")
+    suspend fun clearArticles(type: String, queryString: String)
+
+    @Query("SELECT * from article WHERE type = :type AND `query` = :queryString")
+    fun getAllArticle(type: String, queryString: String): Flow<List<ArticleDb>>
 
     @Insert
     suspend fun insertAllMainArticle(articles: List<ArticleDb>)

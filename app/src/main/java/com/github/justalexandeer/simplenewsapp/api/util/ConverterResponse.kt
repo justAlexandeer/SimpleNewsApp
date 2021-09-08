@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class ConverterResponse @Inject constructor() {
 
-    suspend fun <T> createCall(call: suspend () -> NetworkResponse<SuccessArticlesResponse, ErrorResponse>): Result<SuccessArticlesResponse> {
+    suspend fun <T: Any> createCall(call: suspend () -> NetworkResponse<T, ErrorResponse>): Result<T> {
         val response = call.invoke()
         when(response) {
             is NetworkResponse.Success -> {

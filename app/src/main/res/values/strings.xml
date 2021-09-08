@@ -9,4 +9,13 @@
     <string name="bottom_navigation_news_main">Главная</string>
     <string name="bottom_navigation_news_line">Кэш</string>
     <string name="image_description">Изображение</string>
+
+
+    <string-array name="all_theme_main_line">
+        <item>Страна</item>
+        <item>Здоровье</item>
+        <item>Политика</item>
+        <item>Финансы</item>
+    </string-array>
+
 </resources>
