@@ -25,7 +25,6 @@ class NewsMainFragment : Fragment() {
 
     private lateinit var binding: FragmentNewsMainBinding
     private val viewModel: NewsMainViewModel by viewModels()
-    private lateinit var group: ViewGroup
     val listViewOfNews: MutableList<ViewGroup> = mutableListOf()
 
     override fun onCreateView(
@@ -33,9 +32,6 @@ class NewsMainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        if(container != null) {
-            group = container
-        }
         binding = FragmentNewsMainBinding.inflate(inflater, container, false)
         return binding.root
     }

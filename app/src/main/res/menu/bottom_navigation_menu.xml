@@ -6,4 +6,7 @@
     <item
         android:id="@+id/newsMainFragment"
         android:title="@string/bottom_navigation_news_main" />
+    <item
+        android:id="@+id/accountFragment"
+        android:title="@string/bottom_navigation_account" />
 </menu>

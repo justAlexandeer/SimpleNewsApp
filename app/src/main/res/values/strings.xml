@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Simple News App</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="retry">Повторить попытку</string>
     <string name="retryMessage">Уууупс… что-то пошло не так</string>
@@ -8,14 +7,16 @@
     <string name="unknownAuthor">Неизвестный автор</string>
     <string name="bottom_navigation_news_main">Главная</string>
     <string name="bottom_navigation_news_line">Кэш</string>
+    <string name="bottom_navigation_account">Я</string>
     <string name="image_description">Изображение</string>
 
 
+
     <string-array name="all_theme_main_line">
-        <item>Страна</item>
-        <item>Здоровье</item>
-        <item>Политика</item>
-        <item>Финансы</item>
+        <item>Country</item>
+        <item>Health</item>
+        <item>Policy</item>
+        <item>Finance</item>
     </string-array>
 
 </resources>
