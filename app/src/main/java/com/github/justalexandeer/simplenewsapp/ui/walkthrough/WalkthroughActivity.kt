@@ -5,11 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.github.justalexandeer.simplenewsapp.data.SharedPreferencesManager
+import androidx.lifecycle.lifecycleScope
 import com.github.justalexandeer.simplenewsapp.databinding.ActivityWalkthroughBinding
 import com.github.justalexandeer.simplenewsapp.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
+
+// Исправить Activity и ViewModel под MVVM
 
 @AndroidEntryPoint
 class WalkthroughActivity : AppCompatActivity() {
@@ -23,12 +28,11 @@ class WalkthroughActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel.checkIsFirstStart()
+        setupObserver()
         binding.button.setOnClickListener {
-            onMainActivity()
+            viewModel.onButtonClick()
         }
     }
-
-
 
     private fun onMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
@@ -36,7 +40,31 @@ class WalkthroughActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun setupObserver() {
+        lifecycleScope.launch {
+            viewModel.isNeedStartNewActivity
+                .filter {
+                    return@filter it
+                }
+                .collect {
+                    onMainActivity()
+                }
+        }
 
+        lifecycleScope.launch {
+            viewModel.isDefaultThemeSet
+                .combine(viewModel.isButtonClick) { isThemeSet, isButtonClick ->
+                    return@combine isThemeSet && isButtonClick
+                }
+                .filter {
+                    return@filter it
+                }
+                .collect {
+                    onMainActivity()
+                }
+        }
+
+    }
 
     companion object {
         private const val TAG = "WalkthroughActivity"

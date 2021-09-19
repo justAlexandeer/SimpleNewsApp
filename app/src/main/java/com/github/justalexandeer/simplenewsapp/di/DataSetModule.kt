@@ -1,7 +1,7 @@
 package com.github.justalexandeer.simplenewsapp.di
 
 import android.content.Context
-import com.github.justalexandeer.simplenewsapp.data.SharedPreferencesManager
+import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

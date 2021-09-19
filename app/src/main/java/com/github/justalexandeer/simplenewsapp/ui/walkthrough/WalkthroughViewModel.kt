@@ -1,14 +1,15 @@
 package com.github.justalexandeer.simplenewsapp.ui.walkthrough
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.github.justalexandeer.simplenewsapp.R
-import com.github.justalexandeer.simplenewsapp.data.SharedPreferencesManager
-import com.github.justalexandeer.simplenewsapp.data.SharedPreferencesManager.Companion.SELECTED_THEMES
+import androidx.lifecycle.viewModelScope
+import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
+import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager.Companion.SELECTED_THEMES
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,25 +18,25 @@ class WalkthroughViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _isFirstStart = MutableStateFlow(false)
-    val isFirstStart = _isFirstStart
+    val isFirstStart = _isFirstStart as StateFlow<Boolean>
     private val _isNeedStartNewActivity = MutableStateFlow(false)
-    val isNeedStartNewActivity = _isNeedStartNewActivity
+    val isNeedStartNewActivity  = _isNeedStartNewActivity as StateFlow<Boolean>
     private val _isDefaultThemeSet = MutableStateFlow(false)
-    val isDefaultThemeSet = _isDefaultThemeSet
+    val isDefaultThemeSet = _isDefaultThemeSet as StateFlow<Boolean>
     private val _isButtonClick = MutableStateFlow(false)
-    val isButtonClick = _isButtonClick
-
-    init {
-        Log.i(TAG, "init")
-    }
+    val isButtonClick = _isButtonClick as StateFlow<Boolean>
 
     fun checkIsFirstStart() {
         if (sharedPreferencesManager.isFirstStart(SharedPreferencesManager.IS_FIRST_START)) {
-            sharedPreferencesManager.firstStart(SharedPreferencesManager.IS_FIRST_START)
             setupDefaultTheme()
         } else {
             _isNeedStartNewActivity.value = true
         }
+    }
+
+    fun onButtonClick() {
+        _isButtonClick.value = true
+        sharedPreferencesManager.firstStart(SharedPreferencesManager.IS_FIRST_START)
     }
 
     private fun setupDefaultTheme() {
@@ -43,7 +44,7 @@ class WalkthroughViewModel @Inject constructor(
             SELECTED_THEMES,
             sharedPreferencesManager.getDefaultTheme()
         )
-        isDefaultThemeSet.value = true
+        _isDefaultThemeSet.value = true
     }
 
     companion object {

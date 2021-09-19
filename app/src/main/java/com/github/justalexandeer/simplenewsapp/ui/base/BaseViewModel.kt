@@ -1,5 +1,6 @@
 package com.github.justalexandeer.simplenewsapp.ui.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +24,7 @@ abstract class BaseViewModel<Event: UiEvent, State: UiState, Effect: UiEffect> :
     private val _effect: Channel<Effect> = Channel()
     val effect = _effect.receiveAsFlow()
 
-    private fun subscribeEvents() {
+    protected fun subscribeEvents() {
         viewModelScope.launch {
             event.collect {
                 handleEvent(it)
@@ -33,6 +34,11 @@ abstract class BaseViewModel<Event: UiEvent, State: UiState, Effect: UiEffect> :
 
     abstract fun handleEvent(event: Event)
 
+    fun setEvent(event : Event) {
+        val newEvent = event
+        viewModelScope.launch { _event.emit(newEvent) }
+    }
+
     fun setState(reduce: State.() -> State) {
         val newState = currentState.reduce()
         _uiState.value = newState
@@ -41,6 +47,10 @@ abstract class BaseViewModel<Event: UiEvent, State: UiState, Effect: UiEffect> :
     fun setEffect(builder: () -> Effect) {
         val effectValue = builder()
         viewModelScope.launch { _effect.send(effectValue) }
+    }
+    
+    companion object {
+        private const val TAG = "BaseViewModel"
     }
 
 }

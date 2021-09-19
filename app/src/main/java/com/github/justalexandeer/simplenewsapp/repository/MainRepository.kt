@@ -1,7 +1,6 @@
 package com.github.justalexandeer.simplenewsapp.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -16,7 +15,7 @@ import com.github.justalexandeer.simplenewsapp.data.db.ArticleDao
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessArticlesResponse
 import com.github.justalexandeer.simplenewsapp.data.network.response.Result
-import com.github.justalexandeer.simplenewsapp.ui.newsmain.MainContractNewsMain
+import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -46,19 +45,21 @@ class MainRepository @Inject constructor(
                 networkRepository,
                 appContext
             )
-
         ).flow
     }
 
-    suspend fun getMainNews(firstQuery: String, secondQuery: String, thirdQuery: String) = flow {
-        class Test(query: String) :
+    suspend fun getMainNews(setNewsTheme: Set<MainNewsTheme>): Flow<Status<out List<ArticleDb>>> {
+        class MainNewsNetworkResource(query: String) :
             NetworkBoundResource<List<ArticleDb>, Result<SuccessArticlesResponse>>(query) {
 
             override suspend fun loadFromNetwork(query: String): Result<SuccessArticlesResponse> {
                 return networkRepository.getMainNews(query, 1, NETWORK_PAGE_SIZE)
             }
 
-            override suspend fun loadFromDb(articleType: String, query: String): Flow<List<ArticleDb>> {
+            override suspend fun loadFromDb(
+                articleType: String,
+                query: String
+            ): Flow<List<ArticleDb>> {
                 return articleDao.getAllArticle(articleType, query)
             }
 
@@ -74,7 +75,10 @@ class MainRepository @Inject constructor(
                 articleDao.clearArticles(articleType, query)
             }
 
-            override fun mapData(result: Result<SuccessArticlesResponse>, query: String): List<ArticleDb> {
+            override fun mapData(
+                result: Result<SuccessArticlesResponse>,
+                query: String
+            ): List<ArticleDb> {
                 val listArticleFromNetwork =
                     (result as Result.Success<SuccessArticlesResponse>).data.articles
                 return listArticleFromNetwork.map {
@@ -93,29 +97,12 @@ class MainRepository @Inject constructor(
             }
         }
 
-        flowOf(
-            Test(firstQuery).asFlow(),
-            Test(secondQuery).asFlow(),
-            Test(thirdQuery).asFlow())
-            .flattenMerge()
-            .collect {
-                when (it) {
-                    is Status.Success -> {
-                        emit(MainContractNewsMain.MainNewsState.Success(it.data))
-                    }
-                    is Status.Error -> {
-                        emit(MainContractNewsMain.MainNewsState.Error
-                            (it.message ?: appContext.resources.getString(R.string.retryMessage)))
-                    }
-                    is Status.Loading -> {
-                        if(!it.data.isNullOrEmpty()) {
-                            emit(MainContractNewsMain.MainNewsState.Loading(it.data))
-                        } else {
-                            emit(MainContractNewsMain.MainNewsState.Loading(null))
-                        }
-                    }
-                }
+        return flow {
+            setNewsTheme.forEach {
+                emit(MainNewsNetworkResource(it.toString()).asFlow())
             }
+        }
+            .flattenMerge()
     }
 
 

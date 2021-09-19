@@ -13,19 +13,27 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
+import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsMainBinding
+import com.github.justalexandeer.simplenewsapp.util.COUNT_NEWS_IN_CARD_THEME
+import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewsMainFragment : Fragment() {
 
-    // Заменить все статичные данные связанны с темами новостей ( чтобы была возможно настройки тем
+    // Заменить все статичные данные связанны с темами новостей (чтобы была возможно настройки тем
     // и их динамиченое отображение)
 
     private lateinit var binding: FragmentNewsMainBinding
     private val viewModel: NewsMainViewModel by viewModels()
-    val listViewOfNews: MutableList<ViewGroup> = mutableListOf()
+    private val mapViewOfNews: MutableMap<ViewGroup, String> = mutableMapOf()
+
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,40 +47,51 @@ class NewsMainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupObservers()
         inflateThemeCards()
-        viewModel.getNews()
-
+        setupObservers()
     }
 
     private fun setupObservers() {
         lifecycleScope.launchWhenCreated {
-            viewModel.uiState.collect {
-                when(it.mainNewsState) {
-                    is MainContractNewsMain.MainNewsState.Idle -> {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is ContractNewsMain.State.Idle -> {
+                        viewModel.setEvent(ContractNewsMain.Event.GetMainNews)
+                    }
+                    is ContractNewsMain.State.Error -> {
+                        Log.i(TAG, "setupObservers: ${state.errorMessage}")
                         binding.progressBar.visibility = View.INVISIBLE
                     }
-                    is MainContractNewsMain.MainNewsState.Error -> {
-                        binding.progressBar.visibility = View.INVISIBLE
-                    }
-                    is MainContractNewsMain.MainNewsState.Loading -> {
-                        it.mainNewsState.listNews?.let {
-                            setupNewsInLayout(it)
-                        }
+                    is ContractNewsMain.State.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
+                        state.listNews?.let {
+                            setupNewsInLayout(
+                                it,
+                                mapViewOfNews,
+                                sharedPreferencesManager.getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES)
+                            )
+                        }
                     }
-                    is MainContractNewsMain.MainNewsState.Success -> {
-                        setupNewsInLayout(it.mainNewsState.listNews)
+                    is ContractNewsMain.State.Success -> {
                         binding.progressBar.visibility = View.INVISIBLE
+                        setupNewsInLayout(
+                            state.listNews,
+                            mapViewOfNews,
+                            sharedPreferencesManager.getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES)
+                        )
                     }
                 }
             }
         }
         lifecycleScope.launchWhenCreated {
-            viewModel.effect.collect{
-                when(it) {
-                    is MainContractNewsMain.Effect.ShowToast -> {
-                        Toast.makeText(this@NewsMainFragment.context, it.message, Toast.LENGTH_SHORT)
+            viewModel.effect.collect {
+                when (it) {
+                    is ContractNewsMain.Effect.ShowToast -> {
+                        Toast.makeText(
+                            this@NewsMainFragment.context,
+                            it.message,
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     }
                 }
@@ -80,152 +99,95 @@ class NewsMainFragment : Fragment() {
         }
     }
 
-    fun inflateThemeCards() {
-        val listOfTheme = listOf("Country", "Health", "Policy")
+    private fun inflateThemeCards() {
+
+        val listOfTheme = sharedPreferencesManager
+            .getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES).toList()
 
         val linearLayout = binding.linearLayout as ViewGroup
 
-
-        for (i in 0..2) {
+        for (indexThemeOfNews in listOfTheme.indices) {
             val card = layoutInflater.inflate(R.layout.new_card, linearLayout, true) as ViewGroup
-            val linearLayoutCard = card.getChildAt(i) as ViewGroup
+            val linearLayoutCard = card.getChildAt(indexThemeOfNews) as ViewGroup
             val textViewTheme = linearLayoutCard.getChildAt(0) as TextView
-            textViewTheme.text = listOfTheme[i]
+            textViewTheme.text = listOfTheme[indexThemeOfNews].toString()
 
             val cardView = linearLayoutCard.getChildAt(1) as ViewGroup
             val linearLayoutCardView = cardView.getChildAt(0) as ViewGroup
 
-            for (t in 0..2) {
-                val new = layoutInflater.inflate(R.layout.new_view_item2,
+            for (indexOfNew in 0..COUNT_NEWS_IN_CARD_THEME) {
+                val new = layoutInflater.inflate(
+                    R.layout.new_view_item2,
                     linearLayoutCardView,
-                    false)
+                    false
+                )
+
                 linearLayoutCardView.addView(new)
-
                 val newViewGroup = new as LinearLayout
-
-                listViewOfNews.add(newViewGroup)
+                mapViewOfNews[newViewGroup] = listOfTheme[indexThemeOfNews].toString()
             }
         }
     }
 
-    fun setupNewsInLayout(data: List<ArticleDb>) {
-
-        when (data[0].query) {
-            "Country" -> {
-                val listCountryView = listOf(listViewOfNews[0], listViewOfNews[1], listViewOfNews[2])
-                superViewOfNews(data, listCountryView)
+    private fun setupNewsInLayout(
+        data: List<ArticleDb>,
+        mapViewGroup: Map<ViewGroup, String>,
+        setOfTheme: Set<MainNewsTheme>
+    ) {
+        setOfTheme.forEach {
+            when (it) {
+                MainNewsTheme.COUNTRY -> {
+                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
+                        it == "country"
+                    }
+                    val filteredList: List<ArticleDb> = data.filter {
+                        return@filter it.query == "country"
+                    }
+                    superViewOfNews(filteredList, filteredMap)
+                }
+                MainNewsTheme.FINANCE -> {
+                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
+                        it == "finance"
+                    }
+                    val filteredList: List<ArticleDb> = data.filter {
+                        return@filter it.query == "finance"
+                    }
+                    superViewOfNews(filteredList, filteredMap)
+                }
+                MainNewsTheme.HEALTH -> {
+                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
+                        it == "health"
+                    }
+                    val filteredList: List<ArticleDb> = data.filter {
+                        return@filter it.query == "health"
+                    }
+                    superViewOfNews(filteredList, filteredMap)
+                }
+                MainNewsTheme.POLICY -> {
+                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
+                        it == "policy"
+                    }
+                    val filteredList: List<ArticleDb> = data.filter {
+                        return@filter it.query == "policy"
+                    }
+                    superViewOfNews(filteredList, filteredMap)
+                }
             }
-
-
         }
-
-
-            /*
-            // val cardView = linearLayoutCard.getChildAt(1) as ViewGroup
-            // val linearLayoutCardView = cardView.getChildAt(0) as ViewGroup
-
-            val new = layoutInflater.inflate(R.layout.new_view_item2, linearLayoutCardView, true) as ViewGroup
-            val constraintLayoutNew = new.getChildAt(0) as ViewGroup
-            val textViewAuthor = constraintLayoutNew.getChildAt(0) as TextView
-            textViewAuthor.text = "АВТОР"
-            val textViewTitle = constraintLayoutNew.getChildAt(1) as TextView
-            textViewTitle.text = "Тайтал"
-            */
-
     }
 
 
-    fun superViewOfNews(data: List<ArticleDb>, listCountyView: List<ViewGroup>) {
-        listCountyView.forEachIndexed { index, viewGroup ->
-            val textViewAuthor = listCountyView[index].getChildAt(0) as TextView
-            textViewAuthor.text = data[index].author
-            val textViewTitle = listCountyView[index].getChildAt(1) as TextView
-            textViewTitle.text = data[index].title
+    fun superViewOfNews(data: List<ArticleDb>, mapViewGroup: Map<ViewGroup, String>) {
+        var indexListOfData = 0
+        mapViewGroup.forEach {
+            Log.i(TAG, "superViewOfNews: ${it.value}")
+            val textViewAuthor = it.key.getChildAt(0) as TextView
+            textViewAuthor.text = data[indexListOfData].author
+            val textViewTitle = it.key.getChildAt(1) as TextView
+            textViewTitle.text = data[indexListOfData].title
+            indexListOfData++
         }
     }
-
-    /*fun setupNewsInLayout(data: List<ArticleDb>) {
-        when (data[0].query) {
-            "Country" -> {
-                binding.firstCard.nameTheme.text = "Country"
-
-                data.forEachIndexed { index, article ->
-                    when(index) {
-                        0 -> {
-                            binding.firstCard.firstNew.newsViewItemTitle.text = article.title
-                            binding.firstCard.firstNew.newsViewItemDescription.text = article.description
-                            binding.firstCard.firstNew.newsViewItemAuthor.text = article.author
-                            binding.firstCard.firstNew.newsViewItemDate.text = article.publishedAt
-                        }
-                        1 -> {
-                            binding.firstCard.secondNew.newsViewItemTitle.text = article.title
-                            binding.firstCard.secondNew.newsViewItemDescription.text = article.description
-                            binding.firstCard.secondNew.newsViewItemAuthor.text = article.author
-                            binding.firstCard.secondNew.newsViewItemDate.text = article.publishedAt
-                        }
-                        2 -> {
-                            binding.firstCard.thirdNew.newsViewItemTitle.text = article.title
-                            binding.firstCard.thirdNew.newsViewItemDescription.text = article.description
-                            binding.firstCard.thirdNew.newsViewItemAuthor.text = article.author
-                            binding.firstCard.thirdNew.newsViewItemDate.text = article.publishedAt
-                        }
-                    }
-                }
-            }
-            "Health" -> {
-                binding.secondCard.nameTheme.text = "Health"
-
-                data.forEachIndexed { index, article ->
-                    when(index) {
-                        0 -> {
-                            binding.secondCard.firstNew.newsViewItemTitle.text = article.title
-                            binding.secondCard.firstNew.newsViewItemDescription.text = article.description
-                            binding.secondCard.firstNew.newsViewItemAuthor.text = article.author
-                            binding.secondCard.firstNew.newsViewItemDate.text = article.publishedAt
-                        }
-                        1 -> {
-                            binding.secondCard.secondNew.newsViewItemTitle.text = article.title
-                            binding.secondCard.secondNew.newsViewItemDescription.text = article.description
-                            binding.secondCard.secondNew.newsViewItemAuthor.text = article.author
-                            binding.secondCard.secondNew.newsViewItemDate.text = article.publishedAt
-                        }
-                        2 -> {
-                            binding.secondCard.thirdNew.newsViewItemTitle.text = article.title
-                            binding.secondCard.thirdNew.newsViewItemDescription.text = article.description
-                            binding.secondCard.thirdNew.newsViewItemAuthor.text = article.author
-                            binding.secondCard.thirdNew.newsViewItemDate.text = article.publishedAt
-                        }
-                    }
-                }
-            }
-            "Policy" -> {
-                binding.thirdCard.nameTheme.text = "Policy"
-
-                data.forEachIndexed { index, article ->
-                    when(index) {
-                        0 -> {
-                            binding.thirdCard.firstNew.newsViewItemTitle.text = article.title
-                            binding.thirdCard.firstNew.newsViewItemDescription.text = article.description
-                            binding.thirdCard.firstNew.newsViewItemAuthor.text = article.author
-                            binding.thirdCard.firstNew.newsViewItemDate.text = article.publishedAt
-                        }
-                        1 -> {
-                            binding.thirdCard.secondNew.newsViewItemTitle.text = article.title
-                            binding.thirdCard.secondNew.newsViewItemDescription.text = article.description
-                            binding.thirdCard.secondNew.newsViewItemAuthor.text = article.author
-                            binding.thirdCard.secondNew.newsViewItemDate.text = article.publishedAt
-                        }
-                        2 -> {
-                            binding.thirdCard.thirdNew.newsViewItemTitle.text = article.title
-                            binding.thirdCard.thirdNew.newsViewItemDescription.text = article.description
-                            binding.thirdCard.thirdNew.newsViewItemAuthor.text = article.author
-                            binding.thirdCard.thirdNew.newsViewItemDate.text = article.publishedAt
-                        }
-                    }
-                }
-            }
-        }
-    }*/
 
     companion object {
         private const val TAG = "NewsMainFragment"
