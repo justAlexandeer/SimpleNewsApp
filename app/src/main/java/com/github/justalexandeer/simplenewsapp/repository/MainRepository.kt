@@ -83,7 +83,8 @@ class MainRepository @Inject constructor(
                     (result as Result.Success<SuccessArticlesResponse>).data.articles
                 return listArticleFromNetwork.map {
                     ArticleDb(
-                        it.author ?: appContext.resources.getResourceName(R.string.unknownAuthor),
+                        it.author ?: appContext.resources.getString(R.string.unknownAuthor)
+                            .toString(),
                         it.title,
                         it.description,
                         it.url,

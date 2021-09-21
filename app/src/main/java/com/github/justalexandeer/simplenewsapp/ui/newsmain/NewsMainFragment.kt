@@ -18,7 +18,6 @@ import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPref
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsMainBinding
 import com.github.justalexandeer.simplenewsapp.ui.newsmain.recyclerview.DataItem
 import com.github.justalexandeer.simplenewsapp.ui.newsmain.recyclerview.NewsRecyclerViewAdapter
-import com.github.justalexandeer.simplenewsapp.util.COUNT_NEWS_IN_CARD_THEME
 import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect

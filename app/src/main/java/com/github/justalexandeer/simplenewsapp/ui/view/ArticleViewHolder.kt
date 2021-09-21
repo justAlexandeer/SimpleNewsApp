@@ -5,20 +5,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.DrawableTransformation
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.databinding.NewViewItemBinding
+import com.github.justalexandeer.simplenewsapp.util.dateConverter
 
-class ArticleViewHolder (
+class ArticleViewHolder(
     val view: View,
     val binding: NewViewItemBinding
 ) : RecyclerView.ViewHolder(view) {
 
     fun bind(article: ArticleDb?) {
-        if(article == null) {
+        if (article == null) {
         } else {
-            binding.newId.text = article.idArticle.toString()
-            binding.newTitle.text = article.title
-            binding.newDescription.text = article.description
+
+            binding.newsTitle.text = article.title
+            binding.newsDescription.text = article.description
+            binding.newsAuthor.text = article.author
+            binding.newsDate.text = dateConverter(article.publishedAt)
+
+            Glide.with(itemView)
+                .load(article.urlToImage)
+                .centerCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.ic_error)
+                .into(binding.newsImage)
         }
     }
 

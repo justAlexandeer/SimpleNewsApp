@@ -4,12 +4,15 @@
     <string name="retry">Повторить попытку</string>
     <string name="retryMessage">Уууупс… что-то пошло не так</string>
     <string name="checkInternetConnection">Проверьте интернет соединение</string>
-    <string name="unknownAuthor">Неизвестный автор</string>
+    <string name="unknownAuthor">Unknown author</string>
     <string name="bottom_navigation_news_main">Главная</string>
     <string name="bottom_navigation_news_line">Кэш</string>
     <string name="bottom_navigation_account">Я</string>
     <string name="image_description">Изображение</string>
-
+    <string name="button_chang_themes">change theme on main</string>
+    <string name="alert_dialog_theme_title">choose topics</string>
+    <string name="alert_dialog_theme_positive_button">ok</string>
+    <string name="alert_dialog_theme_negative_button">cancel</string>
 
 
     <string-array name="all_theme_main_line">

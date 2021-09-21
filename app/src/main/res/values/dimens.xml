@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="news_card_name">26sp</dimen>
-    <dimen name="news_card_small">8dp</dimen>
+    <dimen name="theme_name_H4">34sp</dimen>
+    <dimen name="new_card_title">20sp</dimen>
     <dimen name="new_view_item_text_size">16sp</dimen>
+
+    <dimen name="margin">16dp</dimen>
+    <dimen name="margin_column">8dp</dimen>
+    <dimen name="new_card_small_margin">8dp</dimen>
     <dimen name="separator_height">1dp</dimen>
+    <dimen name="new_card_image_size">64dp</dimen>
+    <dimen name="new_card_corner_radius">8dp</dimen>
+
+    <dimen name="new_card_elevation">6dp</dimen>
 </resources>

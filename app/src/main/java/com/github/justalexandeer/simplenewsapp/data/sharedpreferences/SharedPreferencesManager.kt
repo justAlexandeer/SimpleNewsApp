@@ -37,6 +37,12 @@ class SharedPreferencesManager @Inject constructor(
                 "finance" -> mainNewsTheme.add(MainNewsTheme.FINANCE)
                 "health" -> mainNewsTheme.add(MainNewsTheme.HEALTH)
                 "policy" -> mainNewsTheme.add(MainNewsTheme.POLICY)
+                "business" -> mainNewsTheme.add(MainNewsTheme.BUSINESS)
+                "culture" -> mainNewsTheme.add(MainNewsTheme.CULTURE)
+                "sport" -> mainNewsTheme.add(MainNewsTheme.SPORT)
+                "auto" -> mainNewsTheme.add(MainNewsTheme.AUTO)
+                "style" -> mainNewsTheme.add(MainNewsTheme.STYLE)
+                "science" -> mainNewsTheme.add(MainNewsTheme.SCIENCE)
             }
         }
         return mainNewsTheme
