@@ -11,6 +11,14 @@ class ContractNewsMain {
         object GetMainNews : Event()
     }
 
+    /*data class State(
+        val isIdle: Boolean = false,
+        val isLoading: Boolean = false,
+        val loading: List<ArticleDb>? = null,
+        val success: List<ArticleDb>? = null,
+        val error: String? = null
+    ) : UiState
+*/
     sealed class State : UiState {
         object Idle : State()
         data class Loading(val listNews: List<ArticleDb>?) : State()

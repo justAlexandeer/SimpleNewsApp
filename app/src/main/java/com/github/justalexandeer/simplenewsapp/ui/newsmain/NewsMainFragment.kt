@@ -11,10 +11,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsMainBinding
+import com.github.justalexandeer.simplenewsapp.ui.newsmain.recyclerview.DataItem
+import com.github.justalexandeer.simplenewsapp.ui.newsmain.recyclerview.NewsRecyclerViewAdapter
 import com.github.justalexandeer.simplenewsapp.util.COUNT_NEWS_IN_CARD_THEME
 import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +33,7 @@ class NewsMainFragment : Fragment() {
     private lateinit var binding: FragmentNewsMainBinding
     private val viewModel: NewsMainViewModel by viewModels()
     private val mapViewOfNews: MutableMap<ViewGroup, String> = mutableMapOf()
+    private val newsRecyclerViewAdapter = NewsRecyclerViewAdapter()
 
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
@@ -47,7 +51,8 @@ class NewsMainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        inflateThemeCards()
+        //inflateThemeCards()
+        setupRecyclerView()
         setupObservers()
     }
 
@@ -59,26 +64,20 @@ class NewsMainFragment : Fragment() {
                         viewModel.setEvent(ContractNewsMain.Event.GetMainNews)
                     }
                     is ContractNewsMain.State.Error -> {
-                        Log.i(TAG, "setupObservers: ${state.errorMessage}")
                         binding.progressBar.visibility = View.INVISIBLE
                     }
                     is ContractNewsMain.State.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                         state.listNews?.let {
-                            setupNewsInLayout(
-                                it,
-                                mapViewOfNews,
-                                sharedPreferencesManager.getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES)
-                            )
+                            newsRecyclerViewAdapter.submitList(mapper(it))
                         }
                     }
                     is ContractNewsMain.State.Success -> {
                         binding.progressBar.visibility = View.INVISIBLE
-                        setupNewsInLayout(
-                            state.listNews,
-                            mapViewOfNews,
-                            sharedPreferencesManager.getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES)
-                        )
+
+                        state.listNews.let {
+                            newsRecyclerViewAdapter.submitList(mapper(it))
+                        }
                     }
                 }
             }
@@ -99,7 +98,35 @@ class NewsMainFragment : Fragment() {
         }
     }
 
-    private fun inflateThemeCards() {
+    private fun setupRecyclerView() {
+        binding.recyclerView.adapter = newsRecyclerViewAdapter
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(context)
+    }
+
+    private fun mapper(listOfNews: List<ArticleDb>): List<DataItem> {
+        val setOfTheme =
+            sharedPreferencesManager.getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES)
+        val groupedListOfNews = listOfNews.groupBy { it.query }
+        val resultList = mutableListOf<DataItem>()
+
+        setOfTheme.forEach { theme ->
+            resultList.add(DataItem.NewTheme(theme.toString()))
+            groupedListOfNews.forEach { entry ->
+                if (theme.toString() == entry.key) {
+                    resultList.addAll(
+                        entry.value.map {
+                            DataItem.NewItem(it)
+                        }
+                    )
+                }
+            }
+        }
+
+        return resultList
+    }
+
+    /*private fun inflateThemeCards() {
 
         val listOfTheme = sharedPreferencesManager
             .getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES).toList()
@@ -180,14 +207,13 @@ class NewsMainFragment : Fragment() {
     fun superViewOfNews(data: List<ArticleDb>, mapViewGroup: Map<ViewGroup, String>) {
         var indexListOfData = 0
         mapViewGroup.forEach {
-            Log.i(TAG, "superViewOfNews: ${it.value}")
             val textViewAuthor = it.key.getChildAt(0) as TextView
             textViewAuthor.text = data[indexListOfData].author
             val textViewTitle = it.key.getChildAt(1) as TextView
             textViewTitle.text = data[indexListOfData].title
             indexListOfData++
         }
-    }
+    }*/
 
     companion object {
         private const val TAG = "NewsMainFragment"

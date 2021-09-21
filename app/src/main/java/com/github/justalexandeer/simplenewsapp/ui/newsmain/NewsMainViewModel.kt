@@ -2,6 +2,7 @@ package com.github.justalexandeer.simplenewsapp.ui.newsmain
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.github.justalexandeer.simplenewsapp.api.interceptor.LoggingInterceptor
 import com.github.justalexandeer.simplenewsapp.data.cache.status.Status
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
@@ -42,7 +43,6 @@ class NewsMainViewModel @Inject constructor(
         val newsFromCache = mutableListOf<ArticleDb>()
         val newsFromNetwork = mutableListOf<ArticleDb>()
         var errorMessage: String? = null
-        var counterOfLoading = 0
         viewModelScope.launch {
             mainRepository.getMainNews(setOfTheme)
                 .collect { status ->
@@ -51,22 +51,20 @@ class NewsMainViewModel @Inject constructor(
                             newsFromNetwork.addAll(status.data)
                         }
                         is Status.Error -> {
-                            errorMessage = status.message
+                            status.message?.let {
+                                errorMessage = status.message
+                            }
                         }
                         is Status.Loading -> {
-                            status.data?.let {
-                                counterOfLoading++
-                                newsFromCache.addAll(it)
-                                if (setOfTheme.size == counterOfLoading) {
-                                    setState {
-                                        ContractNewsMain.State.Loading(newsFromCache)
-                                    }
-                                } else {
-                                    setState {
-                                        ContractNewsMain.State.Loading(null)
-                                    }
+                            if (status.data == null) {
+                                setState {
+                                    ContractNewsMain.State.Loading(null)
                                 }
-
+                            } else {
+                                status.data.let { newsFromCache.addAll(it) }
+                                setState {
+                                    ContractNewsMain.State.Loading(newsFromCache.toList())
+                                }
                             }
                         }
                     }
