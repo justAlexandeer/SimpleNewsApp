@@ -37,7 +37,6 @@ class NewsMainFragment : Fragment() {
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -1,5 +1,6 @@
-package com.github.justalexandeer.simplenewsapp.ui.newsline
+package com.github.justalexandeer.simplenewsapp.ui.newsline.recyclerview
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil

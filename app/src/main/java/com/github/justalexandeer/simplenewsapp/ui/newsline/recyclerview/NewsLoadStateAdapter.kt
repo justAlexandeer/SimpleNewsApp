@@ -1,4 +1,4 @@
-package com.github.justalexandeer.simplenewsapp.ui.newsline
+package com.github.justalexandeer.simplenewsapp.ui.newsline.recyclerview
 
 import android.view.ViewGroup
 import androidx.paging.LoadState

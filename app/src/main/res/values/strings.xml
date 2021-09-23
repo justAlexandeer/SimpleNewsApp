@@ -13,6 +13,8 @@
     <string name="alert_dialog_theme_title">choose topics</string>
     <string name="alert_dialog_theme_positive_button">ok</string>
     <string name="alert_dialog_theme_negative_button">cancel</string>
+    <string name="text_input_edit_text">Search</string>
+    <string name="news_line_no_result">No result =(</string>
 
 
     <string-array name="all_theme_main_line">
