@@ -1,6 +1,7 @@
 package com.github.justalexandeer.simplenewsapp.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -32,8 +33,7 @@ class MainRepository @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     fun getAllNewsAndCache(query: String): Flow<PagingData<ArticleDb>> {
-        val pagingSourceFactory = { appDatabase.articleDao().articlesByQuery(query) }
-
+        val pagingSourceFactory = { appDatabase.articleDao().articlesByQuery(TYPE_ARTICLE_LINE, query) }
         return Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,
@@ -108,6 +108,7 @@ class MainRepository @Inject constructor(
 
 
     companion object {
+        private const val TYPE_ARTICLE_LINE = "Line"
         private const val TAG = "MainRepository"
         const val NETWORK_PAGE_SIZE = 10
         val apiKey = "d83fc9b917ea4d8d99f4acae33467e07"

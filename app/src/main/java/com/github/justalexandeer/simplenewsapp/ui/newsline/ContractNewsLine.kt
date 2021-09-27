@@ -14,9 +14,7 @@ class ContractNewsLine {
 
     sealed class State : UiState {
         object Idle : State()
-        data class Loading(val listNews: PagingData<ArticleDb>?) : State()
-        data class Success(val listNews: PagingData<ArticleDb>) : State()
-        data class Error(val errorMessage: String) : State()
+        data class PagingDataState(val listNews: PagingData<ArticleDb>) : State()
     }
 
     sealed class Effect : UiEffect {

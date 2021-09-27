@@ -70,7 +70,7 @@ class ArticleRemoteMediator(
                 val nextKey = if (endOfPagination) null else page + 1
                 val articlesToDatabase = articles.map {
                     ArticleDb(
-                        it.author?:context.resources.getResourceName(R.string.unknownAuthor),
+                        it.author?:context.resources.getString(R.string.unknownAuthor),
                         it.title,
                         it.description,
                         it.url,

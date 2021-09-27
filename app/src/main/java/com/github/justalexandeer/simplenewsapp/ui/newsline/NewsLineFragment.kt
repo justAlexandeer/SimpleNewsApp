@@ -1,6 +1,7 @@
 package com.github.justalexandeer.simplenewsapp.ui.newsline
 
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -9,27 +10,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.justalexandeer.simplenewsapp.R
+import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsLineBinding
 import com.github.justalexandeer.simplenewsapp.ui.newsline.recyclerview.ArticleAdapter
 import com.github.justalexandeer.simplenewsapp.ui.newsline.recyclerview.NewsLoadStateAdapter
+import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
 import com.github.justalexandeer.simplenewsapp.util.hideKeyboard
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import javax.security.auth.login.LoginException
 
 @AndroidEntryPoint
 class NewsLineFragment : Fragment() {
 
-    // Фокус разобраться
-
     private lateinit var binding: FragmentNewsLineBinding
     private val viewModel: NewsLineViewModel by viewModels()
     private val pagingAdapter = ArticleAdapter()
+
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,12 +53,14 @@ class NewsLineFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        setupRecyclerView()
+        setupUI()
         setupObservers()
-        setupTextInputEditText()
+    }
 
-        //viewModel.getArticles()
+    private fun setupUI() {
+        setupRecyclerView()
+        setupTextInputEditText()
+        setupChips()
     }
 
     private fun setupTextInputEditText() {
@@ -56,6 +68,7 @@ class NewsLineFragment : Fragment() {
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 updateNewsList()
                 hideKeyboard()
+                binding.chipGroup.clearCheck()
                 true
             } else {
                 false
@@ -65,43 +78,76 @@ class NewsLineFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+
+        binding.retryButton.setOnClickListener {
+            pagingAdapter.retry()
+        }
+
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = pagingAdapter.withLoadStateFooter(
             footer = NewsLoadStateAdapter { pagingAdapter.retry() }
         )
+        lifecycleScope.launchWhenCreated {
+            pagingAdapter.loadStateFlow
+                .collect { loadState ->
+                    if (loadState.refresh is LoadState.Loading) {
+                        viewModel.isFirstLoading.value = false
+                    }
+
+                    binding.textViewNoResult.isVisible =
+                        !viewModel.isFirstLoading.value && loadState.refresh is LoadState.NotLoading
+                                && pagingAdapter.itemCount < 1 && loadState.append.endOfPaginationReached
+                    binding.progressBar.isVisible = loadState.refresh is LoadState.Loading
+                    binding.retryButton.isVisible =
+                        loadState.mediator?.refresh is LoadState.Error && pagingAdapter.itemCount == 0
+                }
+        }
     }
 
     private fun setupObservers() {
         lifecycleScope.launchWhenCreated {
             viewModel.uiState.collect { state ->
-                when(state) {
-                    is ContractNewsLine.State.Idle -> {
-
-                    }
-                    is ContractNewsLine.State.Loading -> {
-//                        state.listNews?.let {
-//                            pagingAdapter.submitData(state.listNews)
-//                        }
-                    }
-                    is ContractNewsLine.State.Success -> {
+                when (state) {
+                    is ContractNewsLine.State.Idle -> { }
+                    is ContractNewsLine.State.PagingDataState -> {
                         lifecycleScope.launchWhenCreated {
                             pagingAdapter.submitData(state.listNews)
                         }
                     }
-                    is ContractNewsLine.State.Error -> {
-
-                    }
                 }
-
             }
         }
+    }
+
+    private fun setupChips() {
+
+        MainNewsTheme.values()
+            .forEach { theme ->
+                val chip = layoutInflater.inflate(
+                    R.layout.view_chip_choice,
+                    binding.chipGroup,
+                    false
+                )
+                (chip as Chip).apply {
+                    text = theme.toString()
+                }
+                binding.chipGroup.addView(chip)
+            }
+
+        binding.chipGroup.setOnCheckedChangeListener { _, checkedId ->
+            val chip = binding.root.findViewById<Chip>(checkedId)
+            chip?.let {
+                binding.textInputEditText.setText(chip.text.toString())
+                updateNewsList()
+            }
+        }
+
     }
 
     private fun updateNewsList() {
         binding.textInputEditText.text?.trim().toString().let { query ->
             if (query.isNotEmpty()) {
-                // add scroll
                 viewModel.setEvent(ContractNewsLine.Event.GetNews(query))
             }
         }

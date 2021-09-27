@@ -26,12 +26,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class NewsMainFragment : Fragment() {
 
-    // Заменить все статичные данные связанны с темами новостей (чтобы была возможно настройки тем
-    // и их динамиченое отображение)
-
     private lateinit var binding: FragmentNewsMainBinding
     private val viewModel: NewsMainViewModel by viewModels()
-    private val mapViewOfNews: MutableMap<ViewGroup, String> = mutableMapOf()
     private val newsRecyclerViewAdapter = NewsRecyclerViewAdapter()
 
     @Inject
@@ -49,7 +45,6 @@ class NewsMainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //inflateThemeCards()
         setupRecyclerView()
         setupObservers()
     }
@@ -124,94 +119,6 @@ class NewsMainFragment : Fragment() {
         return resultList
     }
 
-    /*private fun inflateThemeCards() {
-
-        val listOfTheme = sharedPreferencesManager
-            .getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES).toList()
-
-        val linearLayout = binding.linearLayout as ViewGroup
-
-        for (indexThemeOfNews in listOfTheme.indices) {
-            val card = layoutInflater.inflate(R.layout.new_card, linearLayout, true) as ViewGroup
-            val linearLayoutCard = card.getChildAt(indexThemeOfNews) as ViewGroup
-            val textViewTheme = linearLayoutCard.getChildAt(0) as TextView
-            textViewTheme.text = listOfTheme[indexThemeOfNews].toString()
-
-            val cardView = linearLayoutCard.getChildAt(1) as ViewGroup
-            val linearLayoutCardView = cardView.getChildAt(0) as ViewGroup
-
-            for (indexOfNew in 0..COUNT_NEWS_IN_CARD_THEME) {
-                val new = layoutInflater.inflate(
-                    R.layout.new_view_item2,
-                    linearLayoutCardView,
-                    false
-                )
-
-                linearLayoutCardView.addView(new)
-                val newViewGroup = new as LinearLayout
-                mapViewOfNews[newViewGroup] = listOfTheme[indexThemeOfNews].toString()
-            }
-        }
-    }
-
-    private fun setupNewsInLayout(
-        data: List<ArticleDb>,
-        mapViewGroup: Map<ViewGroup, String>,
-        setOfTheme: Set<MainNewsTheme>
-    ) {
-        setOfTheme.forEach {
-            when (it) {
-                MainNewsTheme.COUNTRY -> {
-                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
-                        it == "country"
-                    }
-                    val filteredList: List<ArticleDb> = data.filter {
-                        return@filter it.query == "country"
-                    }
-                    superViewOfNews(filteredList, filteredMap)
-                }
-                MainNewsTheme.FINANCE -> {
-                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
-                        it == "finance"
-                    }
-                    val filteredList: List<ArticleDb> = data.filter {
-                        return@filter it.query == "finance"
-                    }
-                    superViewOfNews(filteredList, filteredMap)
-                }
-                MainNewsTheme.HEALTH -> {
-                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
-                        it == "health"
-                    }
-                    val filteredList: List<ArticleDb> = data.filter {
-                        return@filter it.query == "health"
-                    }
-                    superViewOfNews(filteredList, filteredMap)
-                }
-                MainNewsTheme.POLICY -> {
-                    val filteredMap: Map<ViewGroup, String> = mapViewGroup.filterValues {
-                        it == "policy"
-                    }
-                    val filteredList: List<ArticleDb> = data.filter {
-                        return@filter it.query == "policy"
-                    }
-                    superViewOfNews(filteredList, filteredMap)
-                }
-            }
-        }
-    }
-
-
-    fun superViewOfNews(data: List<ArticleDb>, mapViewGroup: Map<ViewGroup, String>) {
-        var indexListOfData = 0
-        mapViewGroup.forEach {
-            val textViewAuthor = it.key.getChildAt(0) as TextView
-            textViewAuthor.text = data[indexListOfData].author
-            val textViewTitle = it.key.getChildAt(1) as TextView
-            textViewTitle.text = data[indexListOfData].title
-            indexListOfData++
-        }
-    }*/
 
     companion object {
         private const val TAG = "NewsMainFragment"

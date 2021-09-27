@@ -16,8 +16,9 @@ interface ArticleDao {
 
     @Query("SELECT * FROM article WHERE " +
             "query LIKE :queryString " +
+            "AND type = :type " +
             "ORDER BY idArticle ASC")
-    fun articlesByQuery(queryString: String): PagingSource<Int, ArticleDb>
+    fun articlesByQuery(type: String, queryString: String): PagingSource<Int, ArticleDb>
 
     @Query("DELETE FROM article WHERE type = :type")
     suspend fun clearArticles(type: String)
