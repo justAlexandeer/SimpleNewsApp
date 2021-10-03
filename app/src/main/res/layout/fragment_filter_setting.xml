@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_column"
+            android:layout_marginTop="@dimen/margin_column"
+            android:layout_marginEnd="@dimen/margin_column"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/date_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_column"
+                android:text="@string/filter_setting_date_header"
+                android:textSize="@dimen/title_text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/date_value_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingTop="@dimen/margin"
+                android:paddingBottom="@dimen/margin"
+                android:text="@string/filter_setting_date_value_start"
+                android:textSize="@dimen/text" />
+
+            <TextView
+                android:id="@+id/date_value_end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingTop="@dimen/margin"
+                android:paddingBottom="@dimen/margin"
+                android:text="@string/filter_setting_date_value_end"
+                android:textSize="@dimen/text" />
+
+            <TextView
+                android:id="@+id/language_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_column"
+                android:layout_marginBottom="@dimen/margin_column"
+                android:text="@string/filter_setting_language_header"
+                android:textSize="@dimen/title_text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/language_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingTop="@dimen/margin"
+                android:paddingBottom="@dimen/margin"
+                android:text="@string/filter_setting_language_value"
+                android:textSize="@dimen/text" />
+
+            <TextView
+                android:id="@+id/sort_by_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_column"
+                android:layout_marginBottom="@dimen/margin_column"
+                android:text="@string/filter_setting_sort_by_header"
+                android:textSize="@dimen/title_text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/sort_by_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingTop="@dimen/margin"
+                android:paddingBottom="@dimen/margin"
+                android:textSize="@dimen/text" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_find"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin"
+        android:text="@string/filter_setting_button_find"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

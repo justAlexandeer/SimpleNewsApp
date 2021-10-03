@@ -23,15 +23,4 @@ enum class MainNewsTheme {
     }
 }
 
-
-@SuppressLint("SimpleDateFormat")
-fun dateConverter(dateNews: String): String {
-    val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateNews)
-
-    val calendar = Calendar.getInstance()
-    calendar.time = date
-    val timeInMillis = calendar.timeInMillis
-
-    val requiredDateFormat = SimpleDateFormat("dd.MM.yyyy")
-    return requiredDateFormat.format(timeInMillis).toString()
-}
+const val DEFAULT_IMAGE_URL = "https://i.ibb.co/QbJtRgK/newspaper-cover-page-260nw-142034005.jpg"

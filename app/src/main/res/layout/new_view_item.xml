@@ -12,6 +12,7 @@
     app:cardElevation="@dimen/new_card_elevation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_news"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/margin_column">
@@ -24,7 +25,7 @@
             android:layout_marginBottom="@dimen/margin_column"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textSize="@dimen/new_view_item_text_size"
+            android:textSize="@dimen/text"
             android:textStyle="bold"
 
             app:layout_constraintBottom_toTopOf="@id/news_description"
@@ -41,7 +42,7 @@
             android:layout_marginBottom="@dimen/margin_column"
             android:ellipsize="end"
             android:maxLines="4"
-            android:textSize="@dimen/new_view_item_text_size"
+            android:textSize="@dimen/text"
 
             app:layout_constraintBottom_toTopOf="@id/news_author"
             app:layout_constraintEnd_toStartOf="@id/news_image"
@@ -66,7 +67,7 @@
             android:ellipsize="end"
             android:gravity="start"
             android:maxLines="1"
-            android:textSize="@dimen/new_view_item_text_size"
+            android:textSize="@dimen/text"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/news_date"
@@ -80,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_column"
             android:gravity="end"
-            android:textSize="@dimen/new_view_item_text_size"
+            android:textSize="@dimen/text"
             android:textStyle="italic"
 
             app:layout_constraintBottom_toBottomOf="parent"

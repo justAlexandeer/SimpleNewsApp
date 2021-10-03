@@ -2,6 +2,7 @@ package com.github.justalexandeer.simplenewsapp.ui.newsline
 
 import androidx.paging.PagingData
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
+import com.github.justalexandeer.simplenewsapp.data.model.FilterSettings
 import com.github.justalexandeer.simplenewsapp.ui.base.UiEffect
 import com.github.justalexandeer.simplenewsapp.ui.base.UiEvent
 import com.github.justalexandeer.simplenewsapp.ui.base.UiState
@@ -10,6 +11,7 @@ class ContractNewsLine {
 
     sealed class Event: UiEvent {
         data class GetNews(val query: String) : Event()
+        data class SetFilterSettings(val filterSettings: FilterSettings): Event()
     }
 
     sealed class State : UiState {

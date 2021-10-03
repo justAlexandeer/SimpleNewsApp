@@ -1,22 +1,20 @@
 package com.github.justalexandeer.simplenewsapp.ui.newsline
 
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.justalexandeer.simplenewsapp.NavGraphDirections
 import com.github.justalexandeer.simplenewsapp.R
+import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsLineBinding
 import com.github.justalexandeer.simplenewsapp.ui.newsline.recyclerview.ArticleAdapter
@@ -25,18 +23,18 @@ import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
 import com.github.justalexandeer.simplenewsapp.util.hideKeyboard
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.security.auth.login.LoginException
+import com.github.justalexandeer.simplenewsapp.data.model.FilterSettings
+import com.github.justalexandeer.simplenewsapp.ui.base.OnNewsClickedListener
+import com.github.justalexandeer.simplenewsapp.ui.newsline.filersettings.FilterSettingFragment.Companion.KEY_FILTER_SETTING
 
 @AndroidEntryPoint
-class NewsLineFragment : Fragment() {
+class NewsLineFragment : Fragment(), OnNewsClickedListener {
 
     private lateinit var binding: FragmentNewsLineBinding
     private val viewModel: NewsLineViewModel by viewModels()
-    private val pagingAdapter = ArticleAdapter()
+    private val pagingAdapter = ArticleAdapter(this)
 
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
@@ -57,9 +55,15 @@ class NewsLineFragment : Fragment() {
         setupObservers()
     }
 
+    override fun onNewsClick(news: ArticleDb) {
+        val action = NavGraphDirections.actionGlobalNewsDetailFragment(news)
+        findNavController().navigate(action)
+    }
+
     private fun setupUI() {
         setupRecyclerView()
         setupTextInputEditText()
+        setupButton()
         setupChips()
     }
 
@@ -73,12 +77,10 @@ class NewsLineFragment : Fragment() {
             } else {
                 false
             }
-
         }
     }
 
     private fun setupRecyclerView() {
-
         binding.retryButton.setOnClickListener {
             pagingAdapter.retry()
         }
@@ -94,7 +96,6 @@ class NewsLineFragment : Fragment() {
                     if (loadState.refresh is LoadState.Loading) {
                         viewModel.isFirstLoading.value = false
                     }
-
                     binding.textViewNoResult.isVisible =
                         !viewModel.isFirstLoading.value && loadState.refresh is LoadState.NotLoading
                                 && pagingAdapter.itemCount < 1 && loadState.append.endOfPaginationReached
@@ -106,10 +107,19 @@ class NewsLineFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle
+        savedStateHandle?.getLiveData<FilterSettings>(KEY_FILTER_SETTING)
+            ?.observe(viewLifecycleOwner) { result ->
+                viewModel.setEvent(ContractNewsLine.Event.SetFilterSettings(result))
+                savedStateHandle.remove<FilterSettings>(KEY_FILTER_SETTING)
+                updateNewsList()
+            }
+
         lifecycleScope.launchWhenCreated {
             viewModel.uiState.collect { state ->
                 when (state) {
-                    is ContractNewsLine.State.Idle -> { }
+                    is ContractNewsLine.State.Idle -> {
+                    }
                     is ContractNewsLine.State.PagingDataState -> {
                         lifecycleScope.launchWhenCreated {
                             pagingAdapter.submitData(state.listNews)
@@ -121,7 +131,6 @@ class NewsLineFragment : Fragment() {
     }
 
     private fun setupChips() {
-
         MainNewsTheme.values()
             .forEach { theme ->
                 val chip = layoutInflater.inflate(
@@ -138,11 +147,24 @@ class NewsLineFragment : Fragment() {
         binding.chipGroup.setOnCheckedChangeListener { _, checkedId ->
             val chip = binding.root.findViewById<Chip>(checkedId)
             chip?.let {
-                binding.textInputEditText.setText(chip.text.toString())
-                updateNewsList()
+                updateEditTextAndMakeQuery(chip.text.toString())
             }
         }
 
+    }
+
+    private fun setupButton() {
+        binding.buttonFilterSettings.setOnClickListener {
+            val action = NewsLineFragmentDirections.actionNewsLineFragmentToFilterSettingFragment(
+                viewModel.currentFilterSettings1.value
+            )
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun updateEditTextAndMakeQuery(query: String) {
+        binding.textInputEditText.setText(query)
+        updateNewsList()
     }
 
     private fun updateNewsList() {
@@ -151,7 +173,6 @@ class NewsLineFragment : Fragment() {
                 viewModel.setEvent(ContractNewsLine.Event.GetNews(query))
             }
         }
-
     }
 
     companion object {

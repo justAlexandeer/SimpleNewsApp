@@ -9,7 +9,12 @@
         android:id="@+id/newsLineFragment"
         android:name="com.github.justalexandeer.simplenewsapp.ui.newsline.NewsLineFragment"
         android:label="fragment_news_cache"
-        tools:layout="@layout/fragment_news_line" />
+        tools:layout="@layout/fragment_news_line">
+        <action
+            android:id="@+id/action_newsLineFragment_to_filterSettingFragment"
+            app:destination="@id/filterSettingFragment">
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/newsMainFragment"
         android:name="com.github.justalexandeer.simplenewsapp.ui.newsmain.NewsMainFragment"
@@ -19,6 +24,58 @@
         android:id="@+id/accountFragment"
         android:name="com.github.justalexandeer.simplenewsapp.ui.account.AccountFragment"
         android:label="AccountFragment"
-        tools:layout="@layout/fragment_account"/>
+        tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/filterSettingFragment"
+        android:name="com.github.justalexandeer.simplenewsapp.ui.newsline.filersettings.FilterSettingFragment"
+        android:label="fragment_filter_setting"
+        tools:layout="@layout/fragment_filter_setting">
+        <argument
+            android:name="filterSetting"
+            app:argType="com.github.justalexandeer.simplenewsapp.data.model.FilterSettings" />
+        <action
+            android:id="@+id/action_filterSettingFragment_to_cutsomDatePicker"
+            app:destination="@id/cutsomDatePicker" />
+        <action
+            android:id="@+id/action_filterSettingFragment_to_languagePickerDialog"
+            app:destination="@id/languagePickerDialog" />
+        <action
+            android:id="@+id/action_filterSettingFragment_to_sortByPickerDialog"
+            app:destination="@id/sortByPickerDialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/cutsomDatePicker"
+        android:name="com.github.justalexandeer.simplenewsapp.ui.view.CustomDatePicker">
+        <argument android:name="dateKey"
+            app:argType="string" />
+    </dialog>
+    <dialog
+        android:id="@+id/languagePickerDialog"
+        android:name="com.github.justalexandeer.simplenewsapp.ui.view.LanguagePickerDialog">
+        <argument
+            android:name="languageKey"
+            app:argType="string" />
+        <argument android:name="selectedItem"
+            app:argType="string" />
+    </dialog>
+    <dialog
+        android:id="@+id/sortByPickerDialog"
+        android:name="com.github.justalexandeer.simplenewsapp.ui.view.SortByPickerDialog">
+        <argument
+            android:name="sortByKey"
+            app:argType="string" />
+        <argument android:name="selectedItem"
+            app:argType="string" />
+    </dialog>
+    <fragment
+        android:id="@+id/newsDetailFragment"
+        android:name="com.github.justalexandeer.simplenewsapp.ui.newsdetail.NewsDetailFragment"
+        android:label="NewsDetailFragment" >
+        <argument
+            android:name="news"
+            app:argType="com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb" />
+    </fragment>
+    <action android:id="@+id/action_global_newsDetailFragment"
+        app:destination="@id/newsDetailFragment"/>
 
 </navigation>

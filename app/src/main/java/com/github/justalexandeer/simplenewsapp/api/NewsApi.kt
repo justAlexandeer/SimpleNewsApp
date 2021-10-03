@@ -14,5 +14,16 @@ interface NewsApi {
         @Query("pageSize") pageSize: Int,
         @Query("page") page: Int
     ): NetworkResponse<SuccessArticlesResponse, ErrorResponse>
-    
+
+    @GET("v2/everything")
+    suspend fun getFilteredNews(
+        @Query("q") q: String,
+        @Query("pageSize") pageSize: Int,
+        @Query("page") page: Int,
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("language") language: String,
+        @Query("sortBy") sortBy: String
+    ): NetworkResponse<SuccessArticlesResponse, ErrorResponse>
+
 }

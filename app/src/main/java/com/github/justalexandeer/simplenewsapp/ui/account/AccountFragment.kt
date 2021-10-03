@@ -2,7 +2,6 @@ package com.github.justalexandeer.simplenewsapp.ui.account
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +60,7 @@ class AccountFragment : Fragment() {
                         selectedItems.remove(which)
                     }
                 })
-            .setPositiveButton(R.string.alert_dialog_theme_positive_button,
+            .setPositiveButton(R.string.alert_dialog_positive_button,
                 DialogInterface.OnClickListener { dialog, id ->
                     selectedItems.forEach {
                         selectedTheme.add(arrayAllTheme[it].toString())
@@ -71,7 +70,7 @@ class AccountFragment : Fragment() {
                         selectedTheme
                     )
                 })
-            .setNegativeButton(R.string.alert_dialog_theme_negative_button,
+            .setNegativeButton(R.string.alert_dialog_negative_button,
                 DialogInterface.OnClickListener { dialog, id ->
                 })
 

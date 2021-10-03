@@ -11,11 +11,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.justalexandeer.simplenewsapp.NavGraphDirections
 import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentNewsMainBinding
+import com.github.justalexandeer.simplenewsapp.ui.base.OnNewsClickedListener
 import com.github.justalexandeer.simplenewsapp.ui.newsmain.recyclerview.DataItem
 import com.github.justalexandeer.simplenewsapp.ui.newsmain.recyclerview.NewsRecyclerViewAdapter
 import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
@@ -24,11 +27,11 @@ import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class NewsMainFragment : Fragment() {
+class NewsMainFragment : Fragment(), OnNewsClickedListener {
 
     private lateinit var binding: FragmentNewsMainBinding
     private val viewModel: NewsMainViewModel by viewModels()
-    private val newsRecyclerViewAdapter = NewsRecyclerViewAdapter()
+    private val newsRecyclerViewAdapter = NewsRecyclerViewAdapter(this)
 
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
@@ -47,6 +50,11 @@ class NewsMainFragment : Fragment() {
 
         setupRecyclerView()
         setupObservers()
+    }
+
+    override fun onNewsClick(news: ArticleDb) {
+        val action = NavGraphDirections.actionGlobalNewsDetailFragment(news)
+        findNavController().navigate(action)
     }
 
     private fun setupObservers() {

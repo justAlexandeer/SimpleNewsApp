@@ -26,6 +26,10 @@ class NewsMainViewModel @Inject constructor(
         subscribeEvents()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+    }
+
     override fun createInitialState(): ContractNewsMain.State {
         return ContractNewsMain.State.Idle
     }
@@ -84,7 +88,6 @@ class NewsMainViewModel @Inject constructor(
     private fun getNewsTheme(): Set<MainNewsTheme> {
         return sharedPreferencesManager.getSelectedTheme(SharedPreferencesManager.SELECTED_THEMES)
     }
-
 
     companion object {
         private const val TAG = "NewsMainViewModel"

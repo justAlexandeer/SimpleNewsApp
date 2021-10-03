@@ -11,11 +11,19 @@
     <string name="image_description">Изображение</string>
     <string name="button_chang_themes">change theme on main</string>
     <string name="alert_dialog_theme_title">choose topics</string>
-    <string name="alert_dialog_theme_positive_button">ok</string>
-    <string name="alert_dialog_theme_negative_button">cancel</string>
+    <string name="alert_dialog_positive_button">ok</string>
+    <string name="alert_dialog_negative_button">cancel</string>
     <string name="text_input_edit_text">Search</string>
     <string name="news_line_no_result">No result =(</string>
 
+    <string name="filter_setting_date_header">Date of publication</string>
+    <string name="filter_setting_date_value_start">From:</string>
+    <string name="filter_setting_date_value_end">To:</string>
+    <string name="filter_setting_date_default">Any</string>
+    <string name="filter_setting_language_header">Language of written news</string>
+    <string name="filter_setting_language_value">Language:</string>
+    <string name="filter_setting_sort_by_header">Sort by</string>
+    <string name="filter_setting_button_find">find</string>
 
     <string-array name="all_theme_main_line">
         <item>Country</item>

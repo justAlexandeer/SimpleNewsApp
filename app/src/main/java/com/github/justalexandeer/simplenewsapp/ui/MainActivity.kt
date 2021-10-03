@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -33,6 +34,16 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setupWithNavController(navController)
 
         binding.toolbar.setBackgroundColor(Color.BLUE)
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            if(destination.id == R.id.newsDetailFragment) {
+                binding.toolbar.visibility = View.GONE
+                binding.bottomNav.visibility = View.GONE
+            } else {
+                binding.toolbar.visibility = View.VISIBLE
+                binding.bottomNav.visibility = View.VISIBLE
+            }
+        }
     }
 
     companion object {

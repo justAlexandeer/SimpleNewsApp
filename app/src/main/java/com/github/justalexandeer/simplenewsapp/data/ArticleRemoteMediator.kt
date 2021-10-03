@@ -14,12 +14,15 @@ import com.github.justalexandeer.simplenewsapp.data.db.ArticleDao
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.data.db.entity.RemoteKeys
 import com.github.justalexandeer.simplenewsapp.data.db.entity.SourceDb
+import com.github.justalexandeer.simplenewsapp.data.model.FilterSettings
 import com.github.justalexandeer.simplenewsapp.data.network.response.Article
 import com.github.justalexandeer.simplenewsapp.repository.NetworkRepository
+import com.github.justalexandeer.simplenewsapp.util.DEFAULT_IMAGE_URL
 
 @OptIn(ExperimentalPagingApi::class)
 class ArticleRemoteMediator(
     private val query: String,
+    private val filterSettings: FilterSettings,
     private val articleDatabase: AppDatabase,
     private val networkRepository: NetworkRepository,
     private val context: Context
@@ -57,7 +60,7 @@ class ArticleRemoteMediator(
 
         try {
             Log.i(TAG, "load: page = $page")
-            val apiResponse = networkRepository.getNews(query, page)
+            val apiResponse = networkRepository.getNews(query, page, filterSettings)
             val articles = apiResponse.articles
 
             val endOfPagination = articles.isEmpty()
@@ -74,7 +77,7 @@ class ArticleRemoteMediator(
                         it.title,
                         it.description,
                         it.url,
-                        it.urlToImage,
+                        it.urlToImage?:DEFAULT_IMAGE_URL,
                         it.publishedAt,
                         it.content,
                         query,

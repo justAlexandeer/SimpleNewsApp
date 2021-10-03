@@ -11,16 +11,22 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
 import com.github.justalexandeer.simplenewsapp.databinding.NewViewItemBinding
+import com.github.justalexandeer.simplenewsapp.ui.base.OnNewsClickedListener
+import com.github.justalexandeer.simplenewsapp.ui.newsline.recyclerview.ArticleAdapter
 import com.github.justalexandeer.simplenewsapp.util.dateConverter
 
 class ArticleViewHolder(
-    val view: View,
-    val binding: NewViewItemBinding
-) : RecyclerView.ViewHolder(view) {
+    private val view: View,
+    private val binding: NewViewItemBinding
+) : RecyclerView.ViewHolder(view){
 
-    fun bind(article: ArticleDb?) {
+    fun bind(article: ArticleDb?, listener: OnNewsClickedListener) {
         if (article == null) {
         } else {
+
+            binding.constraintLayoutNews.setOnClickListener {
+                listener.onNewsClick(article)
+            }
 
             binding.newsTitle.text = article.title
             binding.newsDescription.text = article.description
@@ -46,5 +52,4 @@ class ArticleViewHolder(
             return ArticleViewHolder(binding.root, binding)
         }
     }
-
 }

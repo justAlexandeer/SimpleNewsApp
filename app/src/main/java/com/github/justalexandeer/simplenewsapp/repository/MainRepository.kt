@@ -14,8 +14,11 @@ import com.github.justalexandeer.simplenewsapp.data.cache.status.Status
 import com.github.justalexandeer.simplenewsapp.data.db.AppDatabase
 import com.github.justalexandeer.simplenewsapp.data.db.ArticleDao
 import com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb
+import com.github.justalexandeer.simplenewsapp.data.model.FilterSettings
 import com.github.justalexandeer.simplenewsapp.data.network.response.SuccessArticlesResponse
 import com.github.justalexandeer.simplenewsapp.data.network.response.Result
+import com.github.justalexandeer.simplenewsapp.ui.newsmain.NewsMainViewModel
+import com.github.justalexandeer.simplenewsapp.util.DEFAULT_IMAGE_URL
 import com.github.justalexandeer.simplenewsapp.util.MainNewsTheme
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
@@ -32,7 +35,7 @@ class MainRepository @Inject constructor(
 ) {
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getAllNewsAndCache(query: String): Flow<PagingData<ArticleDb>> {
+    fun getAllNewsAndCache(query: String, filterSettings: FilterSettings): Flow<PagingData<ArticleDb>> {
         val pagingSourceFactory = { appDatabase.articleDao().articlesByQuery(TYPE_ARTICLE_LINE, query) }
         return Pager(
             config = PagingConfig(
@@ -41,6 +44,7 @@ class MainRepository @Inject constructor(
             pagingSourceFactory = pagingSourceFactory,
             remoteMediator = ArticleRemoteMediator(
                 query,
+                filterSettings,
                 appDatabase,
                 networkRepository,
                 appContext
@@ -83,12 +87,11 @@ class MainRepository @Inject constructor(
                     (result as Result.Success<SuccessArticlesResponse>).data.articles
                 return listArticleFromNetwork.map {
                     ArticleDb(
-                        it.author ?: appContext.resources.getString(R.string.unknownAuthor)
-                            .toString(),
+                        it.author ?: appContext.resources.getString(R.string.unknownAuthor),
                         it.title,
                         it.description,
                         it.url,
-                        it.urlToImage,
+                        it.urlToImage ?: DEFAULT_IMAGE_URL,
                         it.publishedAt,
                         it.content,
                         query,
@@ -111,7 +114,7 @@ class MainRepository @Inject constructor(
         private const val TYPE_ARTICLE_LINE = "Line"
         private const val TAG = "MainRepository"
         const val NETWORK_PAGE_SIZE = 10
-        val apiKey = "d83fc9b917ea4d8d99f4acae33467e07"
+        val apiKey = "46ce799bc4b64d06b448284996a569b8"
     }
 
 }

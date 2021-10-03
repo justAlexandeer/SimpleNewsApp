@@ -1,11 +1,14 @@
 package com.github.justalexandeer.simplenewsapp.data.db.entity
 
+import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "article")
 data class ArticleDb(
     @field:SerializedName("author") var author : String,
@@ -19,5 +22,5 @@ data class ArticleDb(
     @field:SerializedName("type") var type: String,
     @PrimaryKey(autoGenerate = true)
     @field:SerializedName("idArticle") val idArticle: Long = 0L
-)
+) : Parcelable
 
