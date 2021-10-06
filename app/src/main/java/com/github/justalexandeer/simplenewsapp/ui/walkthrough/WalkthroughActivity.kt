@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.databinding.ActivityWalkthroughBinding
 import com.github.justalexandeer.simplenewsapp.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +24,7 @@ class WalkthroughActivity : AppCompatActivity() {
     private val viewModel: WalkthroughViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_SimpleNewsApp)
         super.onCreate(savedInstanceState)
         binding = ActivityWalkthroughBinding.inflate(layoutInflater)
         setContentView(binding.root)
