@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="theme_name_H4">34sp</dimen>
+    <dimen name="theme_name_H5">24sp</dimen>
     <dimen name="title_text">20sp</dimen>
     <dimen name="text">16sp</dimen>
 

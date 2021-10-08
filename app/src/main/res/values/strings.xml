@@ -15,6 +15,8 @@
     <string name="alert_dialog_negative_button">cancel</string>
     <string name="text_input_edit_text">Search</string>
     <string name="news_line_no_result">No result =(</string>
+    <string name="onboarding_button_next">Next</string>
+    <string name="onboarding_button_start">Start</string>
 
     <string name="filter_setting_date_header">Date of publication</string>
     <string name="filter_setting_date_value_start">From:</string>
@@ -24,6 +26,13 @@
     <string name="filter_setting_language_value">Language:</string>
     <string name="filter_setting_sort_by_header">Sort by</string>
     <string name="filter_setting_button_find">find</string>
+
+    <string name="fragment_read_title">Read</string>
+    <string name="fragment_read_description">Read news on any and interesting topics for you</string>
+    <string name="fragment_search_title">Search</string>
+    <string name="fragment_search_description">Search news on specific topics</string>
+    <string name="fragment_save_title">Save</string>
+    <string name="fragment_save_description">Save news to read them when there is no network</string>
 
     <string-array name="all_theme_main_line">
         <item>Country</item>

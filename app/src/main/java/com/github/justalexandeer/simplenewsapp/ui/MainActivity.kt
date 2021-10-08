@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_SimpleNewsApp)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -36,7 +37,9 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.setBackgroundColor(Color.BLUE)
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            if(destination.id == R.id.newsDetailFragment) {
+            if (destination.id == R.id.newsDetailFragment ||
+                destination.id == R.id.onboardingFragment
+            ) {
                 binding.toolbar.visibility = View.GONE
                 binding.bottomNav.visibility = View.GONE
             } else {
