@@ -35,8 +35,12 @@ class MainRepository @Inject constructor(
 ) {
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getAllNewsAndCache(query: String, filterSettings: FilterSettings): Flow<PagingData<ArticleDb>> {
-        val pagingSourceFactory = { appDatabase.articleDao().articlesByQuery(TYPE_ARTICLE_LINE, query) }
+    fun getAllNewsAndCache(
+        query: String,
+        filterSettings: FilterSettings
+    ): Flow<PagingData<ArticleDb>> {
+        val pagingSourceFactory =
+            { appDatabase.articleDao().articlesByQuery(TYPE_ARTICLE_LINE, query) }
         return Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,
@@ -109,9 +113,29 @@ class MainRepository @Inject constructor(
             .flattenMerge()
     }
 
+    fun isUserAddNewsToFavorite(title: String, content: String, url: String): Flow<ArticleDb?> {
+        return appDatabase.articleDao()
+            .getArticleInFavorite(TYPE_ARTICLE_FAVORITE, title, content, url)
+    }
+
+    suspend fun addNewToFavorite(article: ArticleDb) {
+        val articleWithNewType = article.copy(type = TYPE_ARTICLE_FAVORITE, idArticle = 0L)
+        appDatabase.articleDao().insertAll(mutableListOf(articleWithNewType))
+    }
+
+    suspend fun removeNewFromFavorite(article: ArticleDb) {
+        appDatabase.articleDao().clearArticleFromFavorite(
+            TYPE_ARTICLE_FAVORITE,
+            article.title,
+            article.content,
+            article.url
+        )
+    }
+
 
     companion object {
         private const val TYPE_ARTICLE_LINE = "Line"
+        private const val TYPE_ARTICLE_FAVORITE = "Favorite"
         private const val TAG = "MainRepository"
         const val NETWORK_PAGE_SIZE = 10
         val apiKey = "46ce799bc4b64d06b448284996a569b8"

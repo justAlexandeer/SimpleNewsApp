@@ -14,10 +14,12 @@ interface ArticleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(articles: List<ArticleDb>): List<Long>
 
-    @Query("SELECT * FROM article WHERE " +
-            "query LIKE :queryString " +
-            "AND type = :type " +
-            "ORDER BY idArticle ASC")
+    @Query(
+        "SELECT * FROM article WHERE " +
+                "query LIKE :queryString " +
+                "AND type = :type " +
+                "ORDER BY idArticle ASC"
+    )
     fun articlesByQuery(type: String, queryString: String): PagingSource<Int, ArticleDb>
 
     @Query("DELETE FROM article WHERE type = :type")
@@ -32,5 +34,25 @@ interface ArticleDao {
     @Insert
     suspend fun insertAllMainArticle(articles: List<ArticleDb>)
 
+    @Query(
+        "SELECT * from article WHERE type = :type AND title = :title " +
+                "AND content = :content AND url = :url"
+    )
+    fun getArticleInFavorite(
+        type: String,
+        title: String,
+        content: String,
+        url: String
+    ): Flow<ArticleDb?>
+
+    @Query(
+        "DELETE FROM article WHERE type = :type AND title = :title " +
+                "AND content = :content AND url = :url"
+    )
+    suspend fun clearArticleFromFavorite(
+        type: String, title: String,
+        content: String,
+        url: String
+    )
 
 }

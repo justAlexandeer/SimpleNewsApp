@@ -34,6 +34,8 @@
     <string name="fragment_save_title">Save</string>
     <string name="fragment_save_description">Save news to read them when there is no network</string>
 
+    <string name="fragment_news_detail_menu_favorite">favorite</string>
+
     <string-array name="all_theme_main_line">
         <item>Country</item>
         <item>Health</item>
