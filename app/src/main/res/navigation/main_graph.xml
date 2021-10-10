@@ -12,8 +12,7 @@
         tools:layout="@layout/fragment_news_line">
         <action
             android:id="@+id/action_newsLineFragment_to_filterSettingFragment"
-            app:destination="@id/filterSettingFragment">
-        </action>
+            app:destination="@id/filterSettingFragment"></action>
     </fragment>
     <fragment
         android:id="@+id/newsMainFragment"
@@ -24,7 +23,11 @@
         android:id="@+id/accountFragment"
         android:name="com.github.justalexandeer.simplenewsapp.ui.account.AccountFragment"
         android:label="AccountFragment"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_accountFragment_to_favoriteNewsFragment"
+            app:destination="@id/favoriteNewsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/filterSettingFragment"
         android:name="com.github.justalexandeer.simplenewsapp.ui.newsline.filersettings.FilterSettingFragment"
@@ -46,7 +49,8 @@
     <dialog
         android:id="@+id/cutsomDatePicker"
         android:name="com.github.justalexandeer.simplenewsapp.ui.view.CustomDatePicker">
-        <argument android:name="dateKey"
+        <argument
+            android:name="dateKey"
             app:argType="string" />
     </dialog>
     <dialog
@@ -55,7 +59,8 @@
         <argument
             android:name="languageKey"
             app:argType="string" />
-        <argument android:name="selectedItem"
+        <argument
+            android:name="selectedItem"
             app:argType="string" />
     </dialog>
     <dialog
@@ -64,28 +69,41 @@
         <argument
             android:name="sortByKey"
             app:argType="string" />
-        <argument android:name="selectedItem"
+        <argument
+            android:name="selectedItem"
             app:argType="string" />
     </dialog>
     <fragment
         android:id="@+id/newsDetailFragment"
         android:name="com.github.justalexandeer.simplenewsapp.ui.newsdetail.NewsDetailFragment"
-        android:label="NewsDetailFragment" >
+        android:label="NewsDetailFragment">
         <argument
             android:name="news"
             app:argType="com.github.justalexandeer.simplenewsapp.data.db.entity.ArticleDb" />
     </fragment>
-    <action android:id="@+id/action_global_newsDetailFragment"
-        app:destination="@id/newsDetailFragment"/>
+    <action
+        android:id="@+id/action_global_newsDetailFragment"
+        app:destination="@id/newsDetailFragment" />
     <fragment
         android:id="@+id/onboardingFragment"
         android:name="com.github.justalexandeer.simplenewsapp.ui.walkthrough.OnboardingFragment"
-        android:label="OnboardingFragment" >
+        android:label="OnboardingFragment">
         <action
             android:id="@+id/action_onboardingFragment_to_newsLineFragment"
             app:destination="@id/newsLineFragment"
             app:popUpTo="@id/onboardingFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteNewsFragment"
+        android:name="com.github.justalexandeer.simplenewsapp.ui.account.favorite.FavoriteNewsFragment"
+        android:label="FavoriteNewsFragment">
+        <argument
+            android:name="sortByKey"
+            app:argType="string" />
+        <argument
+            android:name="selectedItem"
+            app:argType="string" />
     </fragment>
 
 </navigation>

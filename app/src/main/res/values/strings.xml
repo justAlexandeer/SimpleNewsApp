@@ -10,6 +10,7 @@
     <string name="bottom_navigation_account">Я</string>
     <string name="image_description">Изображение</string>
     <string name="button_chang_themes">change theme on main</string>
+    <string name="button_favorite">favorite news</string>
     <string name="alert_dialog_theme_title">choose topics</string>
     <string name="alert_dialog_positive_button">ok</string>
     <string name="alert_dialog_negative_button">cancel</string>

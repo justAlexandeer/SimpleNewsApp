@@ -52,9 +52,9 @@ class NewsDetailFragment : Fragment() {
             viewModel.newsIsFavorite.collect {
                 it?.let {
                     binding.toolbar.menu.clear()
+                    binding.toolbar.inflateMenu(R.menu.news_detail_menu)
                     binding.toolbar.menu.findItem(R.id.news_detail_menu_favorite).isEnabled =
                         true
-                    binding.toolbar.inflateMenu(R.menu.news_detail_menu)
                     if (it) {
                         binding.toolbar.menu.findItem(R.id.news_detail_menu_favorite)
                             .setIcon(R.drawable.outline_star_black_36dp)
@@ -91,18 +91,6 @@ class NewsDetailFragment : Fragment() {
                 }
             }
         }
-
-//        binding.toolbar.setOnMenuItemClickListener {
-//            when (it.itemId) {
-//                R.id.news_detail_menu_favorite -> {
-//                    Toast.makeText(context, "asdf", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                else -> {
-//                    false
-//                }
-//            }
-//        }
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()

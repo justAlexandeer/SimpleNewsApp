@@ -132,6 +132,10 @@ class MainRepository @Inject constructor(
         )
     }
 
+    fun getFavoriteNews(): Flow<List<ArticleDb>> {
+        return appDatabase.articleDao().getFavoriteNews(TYPE_ARTICLE_FAVORITE)
+    }
+
 
     companion object {
         private const val TYPE_ARTICLE_LINE = "Line"

@@ -29,6 +29,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:id="@+id/button_favorite_news"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_favorite"
+        android:textAllCaps="false"
+
+        app:layout_constraintBottom_toTopOf="@id/button_change_themes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 
 

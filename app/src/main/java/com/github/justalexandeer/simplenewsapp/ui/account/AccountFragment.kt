@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.github.justalexandeer.simplenewsapp.R
 import com.github.justalexandeer.simplenewsapp.data.sharedpreferences.SharedPreferencesManager
 import com.github.justalexandeer.simplenewsapp.databinding.FragmentAccountBinding
@@ -40,14 +41,16 @@ class AccountFragment : Fragment() {
         binding.buttonChangeThemes.setOnClickListener {
             showDialogFragmentWithThemes()
         }
+        binding.buttonFavoriteNews.setOnClickListener {
+            findNavController().navigate(R.id.action_accountFragment_to_favoriteNewsFragment)
+        }
     }
 
     private fun showDialogFragmentWithThemes() {
         val arrayAllTheme: Array<CharSequence> = MainNewsTheme.values().map {
             it.toString()
         }.toTypedArray()
-
-
+        
         val selectedItems = mutableListOf<Int>()
         val selectedTheme = mutableSetOf<String>()
         val builder = AlertDialog.Builder(requireContext())

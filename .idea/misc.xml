@@ -21,7 +21,8 @@
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/drawable/test.xml" value="0.2" />
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/activity_main.xml" value="0.12943262411347517" />
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/activity_walkthrough.xml" value="0.12943262411347517" />
-        <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/fragment_account.xml" value="0.136" />
+        <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/fragment_account.xml" value="0.152" />
+        <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/fragment_favorite_news.xml" value="0.2477355072463768" />
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/fragment_filter_setting.xml" value="0.10400000000000001" />
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/fragment_news_cache.xml" value="0.176" />
         <entry key="..\:/Users/Alexandr/AndroidStudioProjects/SimpleNewsApp/app/src/main/res/layout/fragment_news_detail.xml" value="0.176" />

@@ -55,4 +55,7 @@ interface ArticleDao {
         url: String
     )
 
+    @Query("SELECT * FROM article WHERE type = :type")
+    fun getFavoriteNews(type: String): Flow<List<ArticleDb>>
+
 }
